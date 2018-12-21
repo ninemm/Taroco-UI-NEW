@@ -1,14 +1,15 @@
 import request from '@/plugin/axios'
+import { menuApi } from './api'
 
 export function GetMenu () {
   return request({
-    url: '/admin/menu/userMenu',
+    url: menuApi.userMenu,
     method: 'get'
   })
 }
 export function fetchTree (query) {
   return request({
-    url: '/admin/menu/allTree',
+    url: menuApi.allMenuTree,
     method: 'get',
     params: query
   })

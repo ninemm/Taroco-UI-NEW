@@ -35,10 +35,10 @@ router.beforeEach((to, from, next) => {
       // 设置顶栏菜单
       store.commit('d2admin/menu/headerSet', res.data)
       router.addRoutes(oRoutes)
-      next({name: 'index'})
+      next({ name: 'index' })
     }).catch(() => {
       // 查询菜单失败 跳转到登陆界面
-      next({name: 'login'})
+      next({ name: 'login' })
     })
   } else {
     // 验证当前路由所有的匹配中是否需要有登陆验证的

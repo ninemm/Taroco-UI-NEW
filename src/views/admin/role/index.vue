@@ -7,15 +7,15 @@
       :model="listQuery"
       size="mini"
       style="margin-bottom: -18px;">
-        <el-form-item label="用户名" prop="username">
-          <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="角色名" v-model="listQuery.roleName" clearable>
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input @keyup.enter.native="handleFilter" placeholder="角色名称" v-model="listQuery.roleName" clearable>
           </el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="default" @click="handleFilter" icon="el-icon-search">搜 索</el-button>
         </el-form-item>
         <el-form-item style="float: right">
-          <el-button style="float: right" @click="handleCreate" type="primary" icon="el-icon-plus" v-if="roleManager_btn_add">新 增</el-button>
+          <el-button style="float: right" @click="handleCreate" type="primary" icon="el-icon-plus">新 增</el-button>
         </el-form-item>
     </el-form>
   </template>
@@ -26,49 +26,50 @@
         element-loading-text="拼命加载中..."
         highlight-current-row
         stripe
+        size="mini"
         style="width: 100%">
 
     <el-table-column align="center" label="序号" width="60">
       <template slot-scope="scope">
-        <span>{{scope.row.roleId}}</span>
-      </template>
-    </el-table-column>
-
-    <el-table-column label="角色名称">
-      <template slot-scope="scope">
-        <span>{{scope.row.roleName}}</span>
-      </template>
-    </el-table-column>
-
-    <el-table-column align="center" label="角色标识">
-      <template slot-scope="scope">
-        <span>{{scope.row.roleCode}}</span>
-      </template>
-    </el-table-column>
-
-    <el-table-column align="center" label="角色描述">
-      <template slot-scope="scope">
-        <span>{{scope.row.roleDesc }}</span>
+        <span>{{scope.row.order_list}}</span>
       </template>
     </el-table-column>
 
     <el-table-column align="center" label="所属部门">
       <template slot-scope="scope">
-        <span>{{scope.row.deptName }}</span>
+        <span>{{scope.row.department.dept_name }}</span>
+      </template>
+    </el-table-column>
+
+    <el-table-column label="角色名称">
+      <template slot-scope="scope">
+        <span>{{scope.row.role_name}}</span>
+      </template>
+    </el-table-column>
+
+    <el-table-column align="center" label="角色标识">
+      <template slot-scope="scope">
+        <span>{{scope.row.role_code}}</span>
+      </template>
+    </el-table-column>
+
+    <el-table-column align="center" label="角色描述">
+      <template slot-scope="scope">
+        <span>{{scope.row.description }}</span>
       </template>
     </el-table-column>
 
     <el-table-column align="center" label="创建时间">
       <template slot-scope="scope">
-        <span>{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+        <span>{{scope.row.create_date | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
       </template>
     </el-table-column>
 
     <el-table-column label="操作" width="220">
       <template slot-scope="scope">
-        <el-button size="mini" type="primary" v-if="roleManager_btn_edit" @click="handleUpdate(scope.row)" icon="el-icon-edit"></el-button>
-        <el-button size="mini" type="danger" v-if="roleManager_btn_del" @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
-        <el-button size="mini" type="success" plain @click="handlePermission(scope.row)" v-if="roleManager_btn_perm" icon="el-icon-rank"></el-button>
+        <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit"></el-button>
+        <el-button size="mini" type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
+        <el-button size="mini" type="success" plain @click="handlePermission(scope.row)" icon="el-icon-rank">权限</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -87,25 +88,27 @@
       </el-pagination>
   </template>
   <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="400px">
-    <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-      <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="form.roleName" placeholder="角色名称"></el-input>
+    <el-form :model="form" :rules="rules" ref="form" label-width="80px" size="small">
+      <el-form-item label="行号" prop="id" v-if="dialogStatus == 'update'">
+        <el-input v-model="form.id" :disabled=true />
       </el-form-item>
-      <el-form-item label="角色标识" prop="roleCode">
-        <el-input v-model="form.roleCode" placeholder="角色标识"></el-input>
+      <el-form-item label="角色名称" prop="role_name">
+        <el-input v-model="form.role_name" placeholder="角色名称"></el-input>
       </el-form-item>
-      <el-form-item label="描述" prop="roleDesc">
-        <el-input v-model="form.roleDesc" placeholder="描述"></el-input>
+      <el-form-item label="角色标识" prop="role_code">
+        <el-input v-model="form.role_code" placeholder="角色标识"></el-input>
       </el-form-item>
-      <el-form-item label="所属部门" prop="roleDept">
-        <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-        <el-input type="hidden" v-model="form.roleDeptId"></el-input>
+      <el-form-item label="描述" prop="description">
+        <el-input type="textarea" v-model="form.description" placeholder="描述"></el-input>
+      </el-form-item>
+      <el-form-item label="排序" prop="order_list">
+        <el-input-number v-model="form.order_list" :min="1" label="排序（升序）"></el-input-number>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="cancel('form')" icon="el-icon-close">取 消</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')" icon="el-icon-check">确 定</el-button>
-      <el-button v-else type="primary" @click="update('form')" icon="el-icon-check">修 改</el-button>
+      <el-button @click="cancel('form')" icon="el-icon-close" size="mini">取 消</el-button>
+      <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')" icon="el-icon-check" size="mini">确 定</el-button>
+      <el-button v-else type="primary" @click="update('form')" icon="el-icon-check" size="mini">修 改</el-button>
     </div>
   </el-dialog>
 
@@ -127,7 +130,6 @@
 <script>
 import {
   fetchList,
-  getObj,
   addObj,
   putObj,
   delObj,
@@ -154,19 +156,17 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 10
+        limit: 10,
+        isAsc: true,
+        orderByField: 'dept_id asc, order_list'
       },
       form: {
-        roleName: undefined,
-        roleCode: undefined,
-        roleDesc: undefined,
-        deptName: undefined,
-        roleDeptId: undefined
+        order_list: 10
       },
       roleId: undefined,
       roleCode: undefined,
       rules: {
-        roleName: [
+        role_name: [
           {
             required: true,
             message: '角色名称',
@@ -179,7 +179,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        roleCode: [
+        role_code: [
           {
             required: true,
             message: '角色标识',
@@ -192,12 +192,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        roleDesc: [
-          {
-            required: true,
-            message: '角色标识',
-            trigger: 'blur'
-          },
+        description: [
           {
             min: 3,
             max: 20,
@@ -226,10 +221,10 @@ export default {
   },
   created () {
     this.getList()
-    this.roleManager_btn_add = this.permissions['sys_role_add']
-    this.roleManager_btn_edit = this.permissions['sys_role_edit']
-    this.roleManager_btn_del = this.permissions['sys_role_del']
-    this.roleManager_btn_perm = this.permissions['sys_role_perm']
+    // this.roleManager_btn_add = this.permissions['sys_role_add']
+    // this.roleManager_btn_edit = this.permissions['sys_role_edit']
+    // this.roleManager_btn_del = this.permissions['sys_role_del']
+    // this.roleManager_btn_perm = this.permissions['sys_role_perm']
   },
   computed: {
     ...mapGetters(['elements', 'permissions'])
@@ -261,16 +256,16 @@ export default {
       this.dialogFormVisible = true
     },
     handleUpdate (row) {
-      getObj(row.roleId).then(response => {
-        this.form = response.data
-        this.form.deptName = row.deptName
-        this.form.roleDeptId = row.roleDeptId
-        this.dialogFormVisible = true
-        this.dialogStatus = 'update'
-      })
+      this.form.id = row.id
+      this.form.role_name = row.role_name
+      this.form.role_code = row.role_code
+      this.form.order_list = row.order_list
+      this.form.description = row.description
+      this.dialogFormVisible = true
+      this.dialogStatus = 'update'
     },
     handlePermission (row) {
-      fetchRoleTree(row.roleCode)
+      fetchRoleTree(row.role_code)
         .then(response => {
           this.checkedKeys = response.data
           return fetchTree()
@@ -280,7 +275,7 @@ export default {
           this.dialogStatus = 'permission'
           this.dialogPermissionVisible = true
           this.roleId = row.roleId
-          this.roleCode = row.roleCode
+          this.role_code = row.role_code
         })
     },
     handleDept () {
@@ -300,16 +295,21 @@ export default {
       console.log(data)
     },
     handleDelete (row) {
-      delObj(row.roleId).then(response => {
-        this.dialogFormVisible = false
-        this.getList()
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+      let that = this
+      this.$confirm('确定删除角色"' + row.role_name + '"', '提示', {
+        type: 'warning'
+      }).then(() => {
+        delObj(row.id).then(response => {
+          that.dialogFormVisible = false
+          that.getList()
+          that.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
         })
-      })
+      }).catch(() => {})
     },
     create (formName) {
       const set = this.$refs
@@ -376,9 +376,10 @@ export default {
     resetTemp () {
       this.form = {
         id: undefined,
-        roleName: undefined,
-        roleCode: undefined,
-        roleDesc: undefined
+        role_name: undefined,
+        role_code: undefined,
+        order_list: undefined,
+        description: undefined
       }
     }
   }

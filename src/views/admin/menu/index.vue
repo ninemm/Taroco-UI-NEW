@@ -1,15 +1,15 @@
 <template>
-  <d2-container>
+  <d2-container better-scroll>
     <!-- header按钮组 -->
     <template slot="header">
       <el-button-group>
         <el-button size="mini" type="primary" v-if="menuManager_btn_add" icon="el-icon-plus" @click="handlerAdd">新 增</el-button>
         <el-button size="mini" type="primary" v-if="menuManager_btn_edit" icon="el-icon-edit" @click="handlerEdit">编 辑</el-button>
-        <el-button size="mini" type="primary" v-if="menuManager_btn_del" icon="el-icon-delete" @click="handleDelete">删 除</el-button>
+        <el-button size="mini" type="danger" v-if="menuManager_btn_del" icon="el-icon-delete" @click="handleDelete">删 除</el-button>
       </el-button-group>
     </template>
-    <el-row>
-      <el-col :span="8">
+    <el-row :gutter="20">
+      <el-col :span="8" class="grid-content bg-purple">
         <el-tree
           class="filter-tree"
           node-key="id"
@@ -24,16 +24,16 @@
         >
         </el-tree>
       </el-col>
-      <el-col :span="16">
-        <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form">
+      <el-col :span="12">
+        <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form" size="small">
           <el-form-item label="父级节点" prop="parentId">
             <el-input v-model="form.parentId" :disabled="true" placeholder="请输入父级节点"></el-input>
           </el-form-item>
-          <el-form-item label="节点ID" prop="menuId">
+          <!-- <el-form-item label="节点ID" prop="menuId">
             <el-input v-model="form.menuId" :disabled="formEdit" placeholder="请输入节点ID"></el-input>
-          </el-form-item>
-          <el-form-item label="标题" prop="name">
-            <el-input v-model="form.name" :disabled="formEdit"  placeholder="请输入标题"></el-input>
+          </el-form-item> -->
+          <el-form-item label="菜单名称" prop="name">
+            <el-input v-model="form.name" :disabled="formEdit"  placeholder="请输入菜单名称"></el-input>
           </el-form-item>
           <el-form-item label="权限标识" prop="permission">
             <el-input v-model="form.permission" :disabled="formEdit" placeholder="请输入权限标识"></el-input>
@@ -128,10 +128,10 @@ export default {
         method: undefined,
         path: undefined
       },
-      currentId: -1,
-      menuManager_btn_add: false,
-      menuManager_btn_edit: false,
-      menuManager_btn_del: false
+      currentId: 0,
+      menuManager_btn_add: true,
+      menuManager_btn_edit: true,
+      menuManager_btn_del: true
     }
   },
   filters: {
@@ -145,9 +145,9 @@ export default {
   },
   created () {
     this.getList()
-    this.menuManager_btn_add = this.permissions['sys_menu_add']
-    this.menuManager_btn_edit = this.permissions['sys_menu_edit']
-    this.menuManager_btn_del = this.permissions['sys_menu_del']
+    // this.menuManager_btn_add = this.permissions['sys_menu_add']
+    // this.menuManager_btn_edit = this.permissions['sys_menu_edit']
+    // this.menuManager_btn_del = this.permissions['sys_menu_del']
   },
   computed: {
     ...mapGetters([
@@ -162,7 +162,6 @@ export default {
       })
     },
     filterNode (value, data) {
-      // console.log(value);
       if (!value) return true
       return data.label.indexOf(value) !== -1
     },
@@ -201,7 +200,6 @@ export default {
         }
       }
     },
-
     getNodeData (data) {
       if (!this.formEdit) {
         this.formStatus = 'update'

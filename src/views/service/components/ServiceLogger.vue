@@ -106,7 +106,7 @@ export default {
       request({
         url: url,
         method: 'post',
-        data: {configuredLevel: value}
+        data: { configuredLevel: value }
       })
         .then((data) => {
           this.$message({

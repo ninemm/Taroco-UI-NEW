@@ -1,15 +1,16 @@
 import request from '@/plugin/axios'
+import { roleApi } from './api'
 
 export function roleList () {
   return request({
-    url: '/admin/role/roleList',
+    url: roleApi.findRoleList,
     method: 'get'
   })
 }
 
 export function fetchList (query) {
   return request({
-    url: '/admin/role/rolePage',
+    url: roleApi.list,
     method: 'get',
     params: query
   })
@@ -24,14 +25,14 @@ export function deptRoleList (deptId) {
 
 export function getObj (id) {
   return request({
-    url: '/admin/role/' + id,
+    url: roleApi.findById + '/' + id,
     method: 'get'
   })
 }
 
 export function addObj (obj) {
   return request({
-    url: '/admin/role/',
+    url: roleApi.save,
     method: 'post',
     data: obj
   })
@@ -39,7 +40,7 @@ export function addObj (obj) {
 
 export function putObj (obj) {
   return request({
-    url: '/admin/role/',
+    url: roleApi.update,
     method: 'put',
     data: obj
   })
@@ -47,7 +48,7 @@ export function putObj (obj) {
 
 export function delObj (id) {
   return request({
-    url: '/admin/role/' + id,
+    url: roleApi.delete + '/' + id,
     method: 'delete'
   })
 }

@@ -1,8 +1,9 @@
 import request from '@/plugin/axios'
+import { userApi } from './api'
 
 export function fetchList (query) {
   return request({
-    url: '/admin/user/userPage',
+    url: userApi.list,
     method: 'get',
     params: query
   })
@@ -10,7 +11,7 @@ export function fetchList (query) {
 
 export function addObj (obj) {
   return request({
-    url: '/admin/user/',
+    url: userApi.saveOrUpdate,
     method: 'post',
     data: obj
   })
@@ -18,22 +19,36 @@ export function addObj (obj) {
 
 export function getObj (id) {
   return request({
-    url: '/admin/user/' + id,
+    url: userApi.findById + '/' + id,
     method: 'get'
   })
 }
 
 export function delObj (id) {
   return request({
-    url: '/admin/user/' + id,
+    url: userApi.delete + '/' + id,
     method: 'delete'
   })
 }
 
 export function putObj (obj) {
   return request({
-    url: '/admin/user',
+    url: userApi.saveOrUpdate,
     method: 'put',
     data: obj
+  })
+}
+
+export function batchDelObj (ids) {
+  return request({
+    url: userApi.batchDelete + '/' + ids,
+    method: 'delete'
+  })
+}
+
+export function fetchStationAndGroupOptions () {
+  return request({
+    url: userApi.findStationAndGroupOptions,
+    method: 'get'
   })
 }

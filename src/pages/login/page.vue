@@ -4,14 +4,14 @@
     <div class="layer flex-center">
       <!-- logo部分 -->
       <div class="logo-group">
-        <h3>登录到TAROCO</h3>
+        <h3>登录到NCloud</h3>
       </div>
       <!-- 表单部分 -->
       <div class="form-group">
         <el-card>
           <el-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin">
             <el-form-item  prop="username">
-              <el-input type="text" v-model="formLogin.username" placeholder="用户名">
+              <el-input type="text" v-model="formLogin.mobile" placeholder="用户名">
                 <d2-icon slot="prepend" name="user-circle-o"></d2-icon>
               </el-input>
             </el-form-item>
@@ -47,14 +47,14 @@ export default {
     return {
       // 表单
       formLogin: {
-        username: 'admin',
+        mobile: '18627771043',
         password: '123456',
         randomStr: '',
         code: ''
       },
       // 校验
       rules: {
-        username: [
+        mobile: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         password: [
@@ -94,7 +94,8 @@ export default {
     refreshCode() {
       this.formLogin.code = "";
       this.formLogin.randomStr = util.randomLenNum(this.code.len, true);
-      this.code.src = `${process.env.VUE_APP_BASE_URL}/admin/code/${this.formLogin.randomStr}`;
+      //this.code.src = `${process.env.VUE_APP_BASE_URL}/admin/code/${this.formLogin.randomStr}`;
+      this.code.src = `http://127.0.0.1/code/${this.formLogin.randomStr}`;
     },
     /**
      * @description 提交表单

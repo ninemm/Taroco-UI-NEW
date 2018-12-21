@@ -15,7 +15,8 @@ const service = axios.create({
 // HTTPrequest拦截
 service.interceptors.request.use(config => {
   if (util.getToken()) {
-    config.headers['Authorization'] = 'Bearer ' + util.getToken() // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+    config.headers['Jwt'] = util.getToken()
+    // config.headers['Authorization'] = 'Bearer ' + util.getToken() // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
   }
   return config
 }, error => {

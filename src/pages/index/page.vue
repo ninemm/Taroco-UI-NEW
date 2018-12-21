@@ -1,7 +1,7 @@
 <template>
   <d2-container class="page">
     <d2-page-cover
-      title="TAROCO"
+      title="NCloud"
       sub-title="Spring Cloud微服务脚手架">
       <img src="./image/taroco.png"/>
       <template slot="footer">

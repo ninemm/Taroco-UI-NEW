@@ -1,5 +1,5 @@
 import util from '@/libs/util.js'
-import {loginByUsername, getUserInfo, logout} from '@/api/login'
+import { loginByUsername, getUserInfo, logout } from '@/api/login'
 import { GetMenu } from '@/api/menu'
 import { frameInRoutes } from '@/router/routes'
 
@@ -12,9 +12,9 @@ export default {
      * @param {Object} param username {String} 用户账号
      * @param {Object} param password {String} 密码
      */
-    login ({ commit, dispatch }, { vm, username, password, code, randomStr }) {
+    login ({ commit, dispatch }, { vm, mobile, password, code, randomStr }) {
       // 开始请求登录接口
-      loginByUsername(username, password, code, randomStr)
+      loginByUsername(mobile, password, code, randomStr)
         .then(res => {
           // 设置 cookie 一定要存 uuid 和 token 两个 cookie
           // 整个系统依赖这两个数据进行校验和存储
@@ -36,7 +36,7 @@ export default {
                 // 设置用户菜单
                 commit('d2admin/user/SET_MENU', res.data, { root: true })
                 let oRoutes = util.formatRoutes(res.data)
-                // 多页面控制: 处理路由 得到每一级的路由设置
+                // 多页面控制: 处理路由得到每一级的路由设置
                 commit('d2admin/page/init', [].concat(frameInRoutes, oRoutes), { root: true })
                 // 设置侧边栏菜单
                 commit('d2admin/menu/asideSet', res.data, { root: true })
@@ -59,7 +59,7 @@ export default {
     getUserInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
-          const data = response.data.result
+          const data = response.data
           commit('d2admin/user/SET_USER_INFO', data.sysUser, { root: true })
           commit('d2admin/user/SET_ROLES', data.roles, { root: true })
           commit('d2admin/user/SET_PERMISSIONS', data.permissions, { root: true })

@@ -7,16 +7,17 @@ import request from '@/plugin/axios'
  * @param {验证码} code
  * @param {验证码随机字符串} randomStr
  */
-export const loginByUsername = (username, password, code, randomStr) => {
+export const loginByUsername = (mobile, password, code, randomStr) => {
   var grantType = 'password'
   var scope = 'server'
   return request({
-    url: '/auth/oauth/token',
-    headers: {
-      'Authorization': 'Basic dGFyb2NvOnRhcm9jbw=='
-    },
+    // url: '/auth/oauth/token',
+    url: '/login',
+    // headers: {
+    //   'Jwt': 'Basic dGFyb2NvOnRhcm9jbw=='
+    // },
     method: 'post',
-    params: { username, password, randomStr, code, 'grant_type': grantType, scope }
+    params: { mobile, password, randomStr, code, 'grant_type': grantType, scope }
   })
 }
 
@@ -25,7 +26,8 @@ export const loginByUsername = (username, password, code, randomStr) => {
  */
 export const getUserInfo = () => {
   return request({
-    url: '/admin/user/info',
+    // url: '/admin/user/info',
+    url: '/api/v1/admin/user/info',
     method: 'get'
   })
 }
@@ -36,7 +38,8 @@ export const getUserInfo = () => {
  */
 export const logout = (accesstoken) => {
   return request({
-    url: '/auth/authentication/removeToken',
+    // url: '/auth/authentication/removeToken',
+    url: '/logout',
     method: 'post',
     params: { accesstoken }
   })

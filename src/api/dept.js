@@ -1,8 +1,17 @@
 import request from '@/plugin/axios'
+import { deptApi } from './api'
 
 export function fetchTree (query) {
   return request({
-    url: '/admin/dept/tree',
+    url: deptApi.tree,
+    method: 'get',
+    params: query
+  })
+}
+
+export function fetchLazyTree (query) {
+  return request({
+    url: deptApi.lazyTree,
     method: 'get',
     params: query
   })
@@ -18,8 +27,9 @@ export function addObj (obj) {
 
 export function getObj (id) {
   return request({
-    url: '/admin/dept/' + id,
-    method: 'get'
+    url: deptApi.findById,
+    method: 'post',
+    params: { id }
   })
 }
 
