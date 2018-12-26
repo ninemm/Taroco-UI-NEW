@@ -11,8 +11,7 @@ export const loginByUsername = (mobile, password, code, randomStr) => {
   var grantType = 'password'
   var scope = 'server'
   return request({
-    // url: '/auth/oauth/token',
-    url: '/login',
+    url: '/auth/login',
     // headers: {
     //   'Jwt': 'Basic dGFyb2NvOnRhcm9jbw=='
     // },
@@ -26,7 +25,6 @@ export const loginByUsername = (mobile, password, code, randomStr) => {
  */
 export const getUserInfo = () => {
   return request({
-    // url: '/admin/user/info',
     url: '/api/v1/admin/user/info',
     method: 'get'
   })
@@ -38,8 +36,7 @@ export const getUserInfo = () => {
  */
 export const logout = (accesstoken) => {
   return request({
-    // url: '/auth/authentication/removeToken',
-    url: '/logout',
+    url: '/auth/logout',
     method: 'post',
     params: { accesstoken }
   })

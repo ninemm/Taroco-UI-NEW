@@ -1,49 +1,17 @@
 <template>
   <d2-container class="page">
     <el-row :gutter="10">
-      <el-col :span="18">
-        <el-row :gutter="10">
-          <el-col :span="12">
-            <el-card header="安全预警" class="index-security-warning">
-              <el-row :gutter="10" class="d2-text-center">
-                <el-col :span="8" class="index-block">
-                  <div class="index-block__bd">
-                    <em class="index-block__value">0</em>
-                  </div>
-                  <div class="index-block__hd">紧急事件</div>
-                </el-col>
-                <el-col :span="8" class="index-block d2-text-center">
-                  <div class="index-block__bd">
-                    <em class="index-block__value">0</em>
-                  </div>
-                  <div class="index-block__hd">紧急事件</div>
-                </el-col>
-                <el-col :span="8" class="index-block d2-text-center">
-                  <div class="index-block__bd">
-                    <em class="index-block__value">0</em>
-                  </div>
-                  <div class="index-block__hd">紧急事件</div>
-                </el-col>
-              </el-row>
-            </el-card>
-          </el-col>
-          <el-col :span="6">
-            ddd
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            eee
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            eee
-          </el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="6">
-        bb
+      <el-col :span="12">
+        <el-card header="安全预警" class="index-security-warning">
+          <el-row :gutter="30" class="d2-text-center">
+            <el-col :span="5" class="index-block">
+              <div class="index-block__bd">
+                <em class="index-block__value">0</em>
+              </div>
+              <div class="index-block__hd">紧急事件</div>
+            </el-col>
+          </el-row>
+        </el-card>
       </el-col>
     </el-row>
   </d2-container>
@@ -71,13 +39,16 @@ export default {
       min-height: 100%;
       font-size: 12px;
       .index-block__bd {
-        line-height: 60px;
+        line-height: 70px;
         flex: 1;
         .index-block__value {
           font-size: 32px;
           color: $color-text-sub;
           font-style: normal;
         }
+      }
+      .index-block__hd {
+        line-height: 30px;
       }
     }
   }
