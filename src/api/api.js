@@ -20,7 +20,8 @@ export const userApi = {
   update: basePath + '/admin/user/update',
   saveOrUpdate: basePath + '/admin/user/saveOrUpdate',
   batchDelete: basePath + '/admin/user/batchDelete',
-  findStationAndGroupOptions: basePath + '/admin/user/findStationAndGroupOptions'
+  uploadFile: basePath + '/admin/user/batchImport',
+  fetchAllOptions: basePath + '/admin/user/findAllOptions'
 }
 
 export const deptApi = {

@@ -12,9 +12,12 @@ import d2Admin from '@/plugin/d2admin'
 
 // 菜单和路由设置
 import router from './router'
+// 菜单
+import { mapState } from 'vuex'
 import { frameInRoutes } from '@/router/routes'
 // 全局filter
 import * as filters from './filters'
+// import { watch } from 'fs';
 
 // 核心插件
 Vue.use(d2Admin)
@@ -44,5 +47,17 @@ new Vue({
     this.$store.commit('d2admin/ua/get')
     // 初始化全屏监听
     this.$store.commit('d2admin/fullscreen/listen')
+  },
+  computed: {
+    ...mapState('d2admin/user', [
+      'aside'
+    ])
+  },
+  watch: {
+    // 监听路由 控制侧边栏显示
+    '$route.matched' (val) {
+      const _side = this.aside.filter(menu => menu.path === val[0].path)
+      this.$store.commit('d2admin/menu/asideSet', _side.length > 0 ? _side[0].children : [])
+    }
   }
 }).$mount('#app')

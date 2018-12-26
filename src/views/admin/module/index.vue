@@ -372,9 +372,6 @@ export default {
   .module-tree {
     height: 200px;
     overflow: auto;
-  }
-
-  .el-tree {
     position: absolute;
     cursor: default;
     background: #fff;

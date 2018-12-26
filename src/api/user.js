@@ -46,9 +46,18 @@ export function batchDelObj (ids) {
   })
 }
 
-export function fetchStationAndGroupOptions () {
+export function fetchAllOptions () {
   return request({
-    url: userApi.findStationAndGroupOptions,
+    url: userApi.fetchAllOptions,
     method: 'get'
+  })
+}
+
+export function uploadFile (obj) {
+  return request({
+    url: userApi.uploadFile,
+    method: 'post',
+    data: obj,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }

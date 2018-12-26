@@ -8,19 +8,19 @@
     <!-- 主体内容 -->
     <div class="d2-layout-header-aside-content" flex="dir:top">
       <!-- 顶栏 -->
-      <div class="d2-theme-header" flex-box="0">
+      <div class="d2-theme-header" flex-box="0" flex>
         <div class="logo-group" :style="{width: asideCollapse ? asideWidthCollapse : asideWidth}">
           <!-- <img v-if="asideCollapse" :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/icon-only.png`">
           <img v-else :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/all.png`"> -->
           <h1 v-if="asideCollapse">N</h1>
           <h2 v-else>NCloud</h2>
         </div>
-        <div class="toggle-aside-btn" @click="handleToggleAside">
+        <div class="toggle-aside-btn" @click="handleToggleAside" flex-box="0">
           <d2-icon name="bars"/>
         </div>
-        <d2-menu-header/>
+        <d2-menu-header flex-box="1"/>
         <!-- 顶栏右侧 -->
-        <div class="d2-header-right">
+        <div class="d2-header-right" flex-box="0">
           <!-- 如果你只想在开发环境显示这个按钮请添加 v-if="$env === 'development'" -->
           <d2-header-error-log/>
           <d2-header-fullscreen/>

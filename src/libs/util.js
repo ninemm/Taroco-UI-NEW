@@ -63,7 +63,7 @@ function getMenu (menu, path) {
   for (const m of menu) {
     let item = {
       path: path ? path + '/' + m.path : m.path,
-      title: m.name,
+      title: m.name || m.title,
       icon: m.icon,
       url: m.url
     }

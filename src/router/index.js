@@ -25,15 +25,17 @@ router.beforeEach((to, from, next) => {
     // 登录了还没有查询菜单
     // 查询用户菜单
     GetMenu().then(res => {
+      let allMenu = res.data.allMenu
+      let headerSet = res.data.headerMenuSet
       // 设置用户菜单
-      store.commit('d2admin/user/SET_MENU', res.data)
-      let oRoutes = util.formatRoutes(res.data)
+      store.commit('d2admin/user/SET_MENU', allMenu)
+      let oRoutes = util.formatRoutes(allMenu)
       // 多页面控制: 处理路由 得到每一级的路由设置
       store.commit('d2admin/page/init', [].concat(frameInRoutes, oRoutes))
       // 设置侧边栏菜单
-      store.commit('d2admin/menu/asideSet', res.data)
+      // store.commit('d2admin/menu/asideSet', allMenu)
       // 设置顶栏菜单
-      store.commit('d2admin/menu/headerSet', res.data)
+      store.commit('d2admin/menu/headerSet', headerSet)
       router.addRoutes(oRoutes)
       next({ name: 'index' })
     }).catch(() => {

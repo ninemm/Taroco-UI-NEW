@@ -1,5 +1,7 @@
 // 设置文件
 import setting from '@/setting.js'
+import { validatenull } from '@/libs/validate'
+import util from '@/libs/util.js'
 
 export default {
   namespaced: true,
@@ -10,6 +12,7 @@ export default {
     refreshToken: '',
     roles: null,
     menu: null,
+    aside: [],
     permissions: null
   },
   mutations: {
@@ -115,6 +118,9 @@ export default {
         value: menu,
         user: true
       })
+      if (!validatenull(menu)) {
+        state.aside = util.initAsideMenu(menu)
+      }
     },
     /**
      * 设置角色

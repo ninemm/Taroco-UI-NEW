@@ -1,12 +1,12 @@
-# Taroco [演示地址](http://111.231.192.110)
-- [配套前端地址](https://github.com/liuht777/Taroco-UI-NEW)
+# NCloud-UI
+- [配套前端地址](https://github.com/ninemm/NCloud-UI)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/liuht777/Taroco)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ninemm/NCloud)
 
 ## 前言
 
-'Taroco' 是一整套的微服务企业级解决方案。是微服务敏捷开发的代表。
+'NCloud' 是一整套的微服务企业级解决方案。是微服务敏捷开发的代表。
 
 ## 项目介绍
 
@@ -16,11 +16,11 @@ Cloud 为微服务架构开发涉及的统一认证，配置管理，服务治�
 
 Spring Cloud 本身已经封装得足够简单，也够丰富。也许正是因为这种简单而丰富，使得想要使用它的团队望而却步。学习成本太高，历史包袱太重，维护成本太高等等一系列原因。
 
-*Taroco* 就是为了解决这一问题而诞生的。 *Taroco* 整合了 Spring Cloud 的**配置中心**、**注册中心**、**服务网关**，提供了一系列starter组件，
+*NCloud* 就是为了解决这一问题而诞生的。 *NCloud* 整合了 Spring Cloud 的**配置中心**、**注册中心**、**服务网关**，提供了一系列starter组件，
 同时提供**服务治理**、**服务监控**、**OAuth2 权限认证**，支持**服务降级/熔断**、**基于标签(x-label)
 的路由**、**服务权重**，前端采用**vue+elementUI**，可以很好的解决技术转向 Spring Cloud 的一系列问题，努力打造全方位的微服务敏捷开发解决方案。
 
-*Taroco* 提供了基于 Docker Compose 的部署方式。配置文件统一放置在docs目录中，运行脚本案例在根目录中查找。
+*NCloud* 提供了基于 Docker Compose 的部署方式。配置文件统一放置在docs目录中，运行脚本案例在根目录中查找。
 
 ### 主要实现功能
 
@@ -35,22 +35,15 @@ Spring Cloud 本身已经封装得足够简单，也够丰富。也许正是因�
 
 ### 整体架构
 
-![架构图](https://github.com/liuht777/Taroco/blob/master/taroco-docs/files/taroco%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
+![架构图]
 
 ### 项目截图
 
-![login](https://github.com/liuht777/Taroco/blob/master/taroco-docs/files/login.png)
-![menu](https://github.com/liuht777/Taroco/blob/master/taroco-docs/files/menu.png)
-![route](https://github.com/liuht777/Taroco/blob/master/taroco-docs/files/route.png)
-![monitor](https://github.com/liuht777/Taroco/blob/master/taroco-docs/files/monitor.png)
-![servers](https://github.com/liuht777/Taroco/blob/master/taroco-docs/files/servers.png)
-![api](https://github.com/liuht777/Taroco/blob/master/taroco-docs/files/api.png)
 
 ### 后端环境
 
 * JDK1.8+
-* Spring Boot 1.5.12
-* Spring Cloud Edgware.SR4
+* JBoot 1.7.5
 * Maven 3.0+
 * Redis 3.0+
 * MySQL 5.7
@@ -58,7 +51,7 @@ Spring Cloud 本身已经封装得足够简单，也够丰富。也许正是因�
 
 ### 前端
 
-Taroco 前端基于开源项目 [D2Admin](https://github.com/d2-projects/d2-admin) 构建。
+NCloud 前端基于开源项目 [D2Admin](https://github.com/d2-projects/d2-admin) 构建。
 
 D2Admin 中文文档：[D2Admin Document](https://d2-projects.github.io/d2-admin-doc/zh/)。
 

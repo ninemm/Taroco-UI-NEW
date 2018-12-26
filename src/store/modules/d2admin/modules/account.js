@@ -9,7 +9,7 @@ export default {
     /**
      * @description 登陆
      * @param {Object} param context
-     * @param {Object} param username {String} 用户账号
+     * @param {Object} param mobile {String} 用户账号
      * @param {Object} param password {String} 密码
      */
     login ({ commit, dispatch }, { vm, mobile, password, code, randomStr }) {
@@ -33,15 +33,16 @@ export default {
           dispatch('getUserInfo')
             .then(res => {
               GetMenu().then(res => {
+                let allMenu = res.data.allMenu
                 // 设置用户菜单
-                commit('d2admin/user/SET_MENU', res.data, { root: true })
-                let oRoutes = util.formatRoutes(res.data)
+                commit('d2admin/user/SET_MENU', allMenu, { root: true })
+                let oRoutes = util.formatRoutes(allMenu)
                 // 多页面控制: 处理路由得到每一级的路由设置
                 commit('d2admin/page/init', [].concat(frameInRoutes, oRoutes), { root: true })
                 // 设置侧边栏菜单
-                commit('d2admin/menu/asideSet', res.data, { root: true })
+                // commit('d2admin/menu/asideSet', allMenu, { root: true })
                 // 设置顶栏菜单
-                commit('d2admin/menu/headerSet', res.data, { root: true })
+                commit('d2admin/menu/headerSet', res.data.headerMenuSet, { root: true })
                 vm.$router.addRoutes(oRoutes)
                 // 跳转路由
                 vm.$router.push({

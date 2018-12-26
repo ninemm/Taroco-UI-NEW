@@ -262,13 +262,23 @@
 
     <!-- 图片上传 -->
     <el-dialog title="用户导入" :visible.sync="dialogFileVisible" width="400px" append-to-body>
-      <el-upload drag action="https://jsonplaceholder.typicode.com/posts/" ref="upload" accept="xls,xlsx" with-credentials>
+      <el-upload
+        drag
+        :limit=1
+        ref="upload"
+        action=""
+        :multiple=false
+        with-credentials
+        accept=".xls, .xlsx"
+        :file-list="files"
+        :http-request='doUploadFile'
+        :auto-upload=false>
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传xls/xlsx文件</div>
+        <div class="el-upload__tip el-upload__text" slot="tip">只能上传xls/xlsx文件</div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeDeptDialog" type="primary" icon="el-icon-close" size="small">取 消</el-button>
+        <el-button @click="dialogFileVisible=false" icon="el-icon-close" size="small">取 消</el-button>
         <el-button @click="submitUpload" type="primary" icon="el-icon-check" size="small">上 传</el-button>
       </div>
     </el-dialog>
@@ -276,7 +286,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj, batchDelObj, fetchStationAndGroupOptions } from '@/api/user'
+import { fetchList, getObj, addObj, putObj, delObj, batchDelObj, uploadFile, fetchAllOptions } from '@/api/user'
 import { fetchLazyTree } from '@/api/dept'
 import { mapGetters } from 'vuex'
 import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
@@ -377,6 +387,7 @@ export default {
       groupOptions: [],
       stationOptions: [],
       typeOptions: [],
+      files: [],
       dialogFormVisible: false,
       dialogDeptVisible: false,
       dialogFileVisible: false,
@@ -526,7 +537,7 @@ export default {
       return names.join(',')
     },
     initOptions () {
-      fetchStationAndGroupOptions().then(res => {
+      fetchAllOptions().then(res => {
         this.groupOptions = res.data.groupOptions
         this.stationOptions = res.data.stationOptions
         this.typeOptions = res.data.typeOptions
@@ -610,10 +621,20 @@ export default {
       this.form.department_id = data.id
       this.form.department_name = data.name
       this.dialogDeptVisible = false
-      // this.$refs['form'].clearValidate('department_name')
     },
     submitUpload () {
       this.$refs.upload.submit()
+    },
+    doUploadFile (param) {
+      let formData = new FormData()
+      formData.append('file', param.file)
+      uploadFile(formData).then(res => {
+        this.files.push(param.file)
+        this.$refs.upload.clearFiles()
+        this.$message.success('导入用户成功')
+        this.dialogFileVisible = false
+        this.getList()
+      })
     },
     resetTemp () {
       this.form = {
