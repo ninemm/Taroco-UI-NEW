@@ -8,6 +8,7 @@ export const menuApi = {
   allMenuTree: basePath + '/admin/menu/allMenuTree',
   findById: basePath + '/admin/menu/findById',
   save: basePath + '/admin/menu/save',
+  saveOrUpdate: basePath + '/admin/menu/saveOrUpdate',
   delete: basePath + '/admin/menu/delete',
   update: basePath + '/admin/menu/update'
 }
@@ -28,9 +29,11 @@ export const deptApi = {
   deptList: basePath + '/admin/dept/list',
   tree: basePath + '/admin/dept/tree',
   lazyTree: basePath + '/admin/dept/findListAsTree',
+  findDeptUserTree: basePath + '/admin/dept/findDeptUserTree',
   findById: basePath + '/admin/dept/findById',
   save: basePath + '/admin/dept/save',
   delete: basePath + '/admin/dept/delete',
+  saveOrUpdate: basePath + '/admin/dept/saveOrUpdate',
   update: basePath + '/admin/dept/update'
 }
 

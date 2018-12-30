@@ -71,3 +71,26 @@ $sizes: (0, 5, 10, 15, 20);
 .#{$prefix}-pr { padding-right: 20px !important; }
 .#{$prefix}-pb { padding-bottom: 20px !important; }
 .#{$prefix}-pl { padding-left: 20px !important; }
+
+
+// 树样式
+
+.#{$prefix}-tree {
+  height: 300px;
+  overflow: auto;
+  cursor: default;
+  background: #fff;
+  color: #606266;
+  border: 1px solid #dcdfe6;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.#{$prefix}-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+}

@@ -10,7 +10,7 @@
           <el-form-item label="平台名称" prop="systemId">
             <el-select v-model="listQuery.systemId" clearable placeholder="请选择">
               <el-option
-                v-for="item in systems"
+                v-for="item in systemOptions"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -30,13 +30,13 @@
       </el-form>
     </template>
     <el-table
-          :key='tableKey'
-          :data="list"
-          size="mini"
-          v-loading="listLoading"
-          element-loading-text="拼命加载中..."
-          stripe
-          style="width: 100%">
+      :key='tableKey'
+      :data="list"
+      size="mini"
+      v-loading="listLoading"
+      element-loading-text="拼命加载中..."
+      stripe
+      style="width: 100%">
       <el-table-column align="center" label="平台名称" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.system_name }}</span>
@@ -96,7 +96,7 @@
         <el-form-item label="平台名称" prop="system_id">
           <el-select v-model="form.system_id" placeholder="请选择" clearable>
             <el-option
-              v-for="item in systems"
+              v-for="item in systemOptions"
               :key="item.id"
               :label="item.name"
               :value="item.id">
@@ -108,13 +108,17 @@
           <el-tree
             lazy
             ref="tree"
-            class="module-tree"
+            class="d2-tree"
             v-show="isShowTree"
             highlight-current
             :props="defaultProps"
-            :load="findModuleTreeList"
-            :render-content="renderContent"
-          >
+            :load="findModuleTreeList">
+            <span class="d2-tree-node" slot-scope="{ node, data }">
+              <span>{{ node.label }}</span>
+              <span>
+                <el-button v-if="node.level>1" type="text" @click="() => confirm(data)">确定</el-button>
+              </span>
+            </span>
           </el-tree>
         </el-form-item>
         <el-form-item label="模块名称" prop="module_name">
@@ -147,7 +151,7 @@ export default {
     return {
       list: null,
       total: null,
-      systems: null,
+      systemOptions: null,
       listLoading: true,
       isShowTree: false,
       listQuery: {
@@ -203,7 +207,7 @@ export default {
   },
   created () {
     this.getList()
-    this.getSelectSystems()
+    this.getSystemOptions()
   },
   methods: {
     getList () {
@@ -216,9 +220,9 @@ export default {
         this.listLoading = false
       })
     },
-    getSelectSystems () {
+    getSystemOptions () {
       fetchListAsSelect().then(response => {
-        this.systems = response.data
+        this.systemOptions = response.data
       })
     },
     handleFilter () {
@@ -253,19 +257,14 @@ export default {
     handleUpdate (row) {
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.form.id = row.id
-      this.form.system_id = row.system_id
-      this.form.parent_id = row.parent_id
-      this.form.module_code = row.module_code
-      this.form.module_name = row.module_name
-      this.form.order_list = row.order_list
-      this.form.parent_module_name = row.parent_module_name
+      this.form = row
     },
     handleCreate () {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
     handleClose () {
+      this.dialogFormVisible = false
       this.resetForm()
     },
     create (formName) {
@@ -293,6 +292,7 @@ export default {
       this.dialogFormVisible = false
       const set = this.$refs
       set[formName].resetFields()
+      this.resetForm()
     },
     update (formName) {
       const set = this.$refs
@@ -329,24 +329,6 @@ export default {
         that.isShowTree = false
       }
     },
-    renderContent (h, { node, data, store }) {
-      if (node.level === 1) {
-        return (
-          <span class="custom-tree-node">
-            <span>{node.label}</span>
-          </span>
-        )
-      } else {
-        return (
-          <span class="custom-tree-node">
-            <span>{node.label}</span>
-            <span>
-              <el-button size="mini" type="text" on-click={ () => this.confirm(data) }>确定</el-button>
-            </span>
-          </span>
-        )
-      }
-    },
     confirm (data) {
       this.form.parent_id = data.id
       this.form.parent_module_name = data.name
@@ -369,25 +351,9 @@ export default {
 </script>
 
 <style>
-  .module-tree {
+  .d2-tree {
     height: 200px;
-    overflow: auto;
     position: absolute;
-    cursor: default;
-    background: #fff;
-    color: #606266;
     z-index: 100;
-    border: 1px solid #dcdfe6;
-    border-radius: 5px;
-    width: 100%;
-  }
-
-  .custom-tree-node {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
   }
 </style>

@@ -106,9 +106,9 @@
         </template>
       </el-table-column>
 
-      <!--<el-table-column align="center" label="角色">
+      <!--<el-table-column align="center" label="负责人">
         <template slot-scope="scope">
-          <span v-for="role in scope.row.roleList" :key="role.id">{{role.roleDesc}} </span>
+          <el-tag :type="scope.row.status === 1 ? 'success' : 'warning'">{{scope.row.status | statusFilter}}</el-tag>
         </template>
       </el-table-column>-->
 
@@ -132,7 +132,7 @@
 
       <el-table-column align="center" label="操作" width="150" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.username !== 'admin'" size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit"></el-button>
+          <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit"></el-button>
           <el-button v-if="scope.row.username !== 'admin'" size="mini" type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
         </template>
       </el-table-column>
@@ -289,14 +289,8 @@
 import { fetchList, getObj, addObj, putObj, delObj, batchDelObj, uploadFile, fetchAllOptions } from '@/api/user'
 import { fetchLazyTree } from '@/api/dept'
 import { mapGetters } from 'vuex'
-import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
-import ElOption from 'element-ui/packages/select/src/option'
 
 export default {
-  components: {
-    ElOption,
-    ElRadioGroup
-  },
   name: 'table_upms_user',
   data () {
     return {
@@ -538,8 +532,12 @@ export default {
     },
     initOptions () {
       fetchAllOptions().then(res => {
-        this.groupOptions = res.data.groupOptions
-        this.stationOptions = res.data.stationOptions
+        if (res.data.groupOptions) {
+          this.groupOptions = res.data.groupOptions
+        }
+        if (res.data.stationOptions) {
+          this.stationOptions = res.data.stationOptions
+        }
         this.typeOptions = res.data.typeOptions
       })
     },

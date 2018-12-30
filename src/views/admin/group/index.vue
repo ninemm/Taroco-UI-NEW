@@ -106,7 +106,7 @@
     </div>
   </el-dialog>
 
-  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="800px" top="20px">
+  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="800px">
     <div style="text-align: center">
       <el-transfer
         style="text-align: left; display: inline-block"

@@ -1,70 +1,76 @@
 <template>
   <d2-container better-scroll>
     <!-- header按钮组 -->
-    <template slot="header">
-      <el-button-group>
-        <el-button size="mini" type="primary" v-if="menuManager_btn_add" icon="el-icon-plus" @click="handlerAdd">新 增</el-button>
-        <el-button size="mini" type="primary" v-if="menuManager_btn_edit" icon="el-icon-edit" @click="handlerEdit">编 辑</el-button>
-        <el-button size="mini" type="danger" v-if="menuManager_btn_del" icon="el-icon-delete" @click="handleDelete">删 除</el-button>
-      </el-button-group>
-    </template>
     <el-row :gutter="20">
-      <el-col :span="8" class="grid-content bg-purple">
-        <el-tree
-          class="filter-tree"
-          node-key="id"
-          highlight-current
-          :data="treeData"
-          :default-expanded-keys="aExpandedKeys"
-          :filter-node-method="filterNode"
-          :props="defaultProps"
-          @node-click="getNodeData"
-          @node-expand="nodeExpand"
-          @node-collapse="nodeCollapse"
-        >
-        </el-tree>
+      <el-col :span="10">
+        <el-card header="菜单" body-style="{padding: '5px'}">
+          <el-tree
+            node-key="id"
+            highlight-current
+            :data="menuTreeData"
+            :props="defaultProps"
+            :expand-on-click-node="false"
+            :default-expanded-keys="aExpandedKeys"
+            @node-expand="nodeExpand"
+            @node-collapse="nodeCollapse">
+            <span class="d2-tree-node" slot-scope="{ node, data }">
+              <span>{{ node.label }}</span>
+              <span>
+                <el-button type="text" @click="() => handleAdd(node)">新增</el-button>
+                <el-button v-if="node.level > 1" type="text" @click="() => handleEdit(node)">编辑</el-button>
+                <el-button v-if="node.level > 1" type="text" @click="() => handleDelete(node)" style="color:#F56C6C;">删除</el-button>
+              </span>
+            </span>
+          </el-tree>
+        </el-card>
       </el-col>
-      <el-col :span="12">
-        <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form" size="small">
-          <el-form-item label="父级节点" prop="parentId">
-            <el-input v-model="form.parentId" :disabled="true" placeholder="请输入父级节点"></el-input>
-          </el-form-item>
-          <!-- <el-form-item label="节点ID" prop="menuId">
-            <el-input v-model="form.menuId" :disabled="formEdit" placeholder="请输入节点ID"></el-input>
-          </el-form-item> -->
-          <el-form-item label="菜单名称" prop="name">
-            <el-input v-model="form.name" :disabled="formEdit"  placeholder="请输入菜单名称"></el-input>
-          </el-form-item>
-          <el-form-item label="权限标识" prop="permission">
-            <el-input v-model="form.permission" :disabled="formEdit" placeholder="请输入权限标识"></el-input>
-          </el-form-item>
-          <el-form-item label="图标" prop="icon">
-            <!-- <el-input v-model="form.icon" :disabled="formEdit" placeholder="请输入图标"></el-input> -->
-            <d2-icon-select v-model="form.icon" placeholder="请选择图标"></d2-icon-select>
-          </el-form-item>
-          <el-form-item label="资源路径" prop="url">
-            <el-input v-model="form.url" :disabled="formEdit" placeholder="请输入资源路径"></el-input>
-          </el-form-item>
-          <el-form-item label="请求方法" prop="method">
-            <el-select class="filter-item" v-model="form.method"  :disabled="formEdit"  placeholder="请输入资源请求类型">
-              <el-option v-for="item in  methodOptions" :key="item" :label="item" :value="item"> </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="类型" prop="type">
-            <el-select class="filter-item" v-model="form.type"  :disabled="formEdit"  placeholder="请输入资源请求类型">
-              <el-option v-for="item in typeOptions" :key="item" :label="item | typeFilter" :value="item"> </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="排序" prop="sort">
-            <el-input v-model="form.sort" :disabled="formEdit" placeholder="请输入排序"></el-input>
-          </el-form-item>
-          <el-form-item label="前端组件"   prop="component">
-            <el-input v-model="form.component" :disabled="formEdit" placeholder="请输入描述"></el-input>
-          </el-form-item>
-          <el-form-item label="前端地址"   prop="component">
-            <el-input v-model="form.path" :disabled="formEdit" placeholder="iframe嵌套地址"></el-input>
-          </el-form-item>
-        </el-form>
+      <el-col :span="14">
+        <el-card :header="textMap[formStatus]" body-style="{padding: '5px'}">
+          <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form" size="small">
+            <input type="hidden" v-model="form.id" />
+            <el-form-item label="父级节点" prop="parent_id">
+              <el-input v-model="form.parent_name" :disabled="formEdit" placeholder="请输入父级节点"></el-input>
+              <input type="hidden" v-model="form.parent_id">
+            </el-form-item>
+            <el-form-item label="菜单名称" prop="name">
+              <el-input v-model="form.name" :disabled="formEdit" placeholder="请输入菜单名称"></el-input>
+            </el-form-item>
+            <el-form-item label="权限标识" prop="permission">
+              <el-input v-model="form.permission" :disabled="formEdit" placeholder="请输入权限标识，如sys-menu-add"></el-input>
+            </el-form-item>
+            <el-form-item label="图标" prop="icon">
+              <d2-icon-select v-model="form.icon" :disabled="formEdit" placeholder="请选择图标"></d2-icon-select>
+            </el-form-item>
+            <el-form-item label="资源路径" prop="code">
+              <el-input v-model="form.code" :disabled="formEdit" placeholder="请输入资源路径"></el-input>
+            </el-form-item>
+            <el-form-item label="前端组件" prop="component">
+              <el-input v-model="form.component" :disabled="formEdit" placeholder="请输入描述"></el-input>
+            </el-form-item>
+            <el-form-item label="前端地址" prop="path">
+              <el-input v-model="form.path" :disabled="formEdit" placeholder="iframe嵌套地址"></el-input>
+            </el-form-item>
+            <el-form-item label="参数" prop="param">
+              <el-input v-model="form.param" :disabled="formEdit" placeholder="请输入参数"></el-input>
+            </el-form-item>
+            <el-form-item label="请求方法" prop="method">
+              <el-select class="filter-item" v-model="form.method"  :disabled="formEdit"  placeholder="请输入资源请求类型">
+                <el-option v-for="item in  methodOptions" :key="item" :label="item" :value="item"> </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="菜单类型" prop="type">
+              <el-select class="filter-item" v-model="form.type"  :disabled="formEdit"  placeholder="请输入资源请求类型">
+                <el-option v-for="item in typeOptions" :key="item" :label="item | typeFilter" :value="item"> </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="菜单层级" prop="level">
+              <el-input v-model="form.level" :disabled="formEdit" placeholder="菜单层级"></el-input>
+            </el-form-item>
+            <el-form-item label="排序" prop="order_list">
+              <el-input v-model="form.order_list" :disabled="formEdit" placeholder="请输入排序"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-card>
       </el-col>
     </el-row>
     <!-- footer -->
@@ -90,18 +96,17 @@ export default {
   name: 'user-menu',
   data () {
     return {
-      list: null,
-      total: null,
       formEdit: true,
       formAdd: true,
-      formStatus: '',
+      formStatus: 'normal',
       showElement: false,
       typeOptions: ['0', '1'],
       methodOptions: ['GET', 'POST', 'PUT', 'DELETE'],
       listQuery: {
         name: undefined
       },
-      treeData: [],
+      menuTreeData: [],
+      aExpandedKeys: [],
       oExpandedKey: {
         // key (from tree id) : expandedOrNot boolean
       },
@@ -109,26 +114,21 @@ export default {
         // id1 : [children] (from tree node id1)
         // id2 : [children] (from tree node id2)
       },
-      aExpandedKeys: [],
+      textMap: {
+        create: '新增菜单',
+        update: '编辑菜单',
+        normal: '菜单录入表单'
+      },
       defaultProps: {
-        children: 'children',
-        label: 'name'
+        label: 'name',
+        isLeaf: 'leaf',
+        disabled: 'disabled',
+        children: 'children'
       },
       labelPosition: 'right',
       form: {
-        permission: undefined,
-        name: undefined,
-        menuId: undefined,
-        parentId: undefined,
-        url: undefined,
-        icon: undefined,
-        sort: undefined,
-        component: undefined,
-        type: undefined,
-        method: undefined,
-        path: undefined
+        order_list: 10
       },
-      currentId: 0,
       menuManager_btn_add: true,
       menuManager_btn_edit: true,
       menuManager_btn_del: true
@@ -144,7 +144,7 @@ export default {
     }
   },
   created () {
-    this.getList()
+    this.initMenuTree()
     // this.menuManager_btn_add = this.permissions['sys_menu_add']
     // this.menuManager_btn_edit = this.permissions['sys_menu_edit']
     // this.menuManager_btn_del = this.permissions['sys_menu_del']
@@ -156,16 +156,15 @@ export default {
     ])
   },
   methods: {
-    getList () {
+    initMenuTree () {
       fetchTree(this.listQuery).then(response => {
-        this.treeData = response.data
+        this.menuTreeData = response.data
       })
     },
     filterNode (value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
     },
-
     nodeExpand (data) {
       let aChildren = data.children
       if (aChildren.length > 0) {
@@ -187,7 +186,7 @@ export default {
       this.aExpandedKeys = []
       for (let sKey in oTemp) {
         if (oTemp[sKey]) {
-          this.aExpandedKeys.push(parseInt(sKey))
+          this.aExpandedKeys.push((sKey))
         }
       }
     },
@@ -200,37 +199,35 @@ export default {
         }
       }
     },
-    getNodeData (data) {
-      if (!this.formEdit) {
-        this.formStatus = 'update'
-      }
-      getObj(data.id).then(response => {
-        this.form = response.data
+    handleEdit (node) {
+      this.formEdit = false
+      this.formStatus = 'update'
+      getObj(node.data.id).then(res => {
+        let data = res.data
+        this.form = data
+        this.form.parent_name = data.parent.name
       })
-      this.currentId = data.id
-      this.showElement = true
     },
-    handlerEdit () {
-      if (this.form.menuId) {
-        this.formEdit = false
-        this.formStatus = 'update'
-      }
-    },
-    handlerAdd () {
+    handleAdd (node) {
       this.resetForm()
       this.formEdit = false
       this.formStatus = 'create'
+      this.form.is_parent = 0
+      this.form.level = node.level
+      this.form.parent_id = node.data.id
+      this.form.parent_name = node.data.name
     },
-    handleDelete () {
+    handleDelete (node) {
       this.$confirm('此操作将永久删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(this.currentId).then(() => {
-          this.getList()
+        delObj(node.data.id).then(() => {
           this.resetForm()
           this.onCancel()
+          this.initMenuTree()
+
           this.$notify({
             title: '成功',
             message: '删除成功',
@@ -242,7 +239,9 @@ export default {
     },
     update () {
       putObj(this.form).then(() => {
-        this.getList()
+        this.resetForm()
+        this.onCancel()
+        this.initMenuTree()
         this.$notify({
           title: '成功',
           message: '更新成功',
@@ -253,7 +252,9 @@ export default {
     },
     create () {
       addObj(this.form).then(() => {
-        this.getList()
+        this.resetForm()
+        this.onCancel()
+        this.initMenuTree()
         this.$notify({
           title: '成功',
           message: '创建成功',
@@ -264,22 +265,12 @@ export default {
     },
     onCancel () {
       this.formEdit = true
-      this.formStatus = ''
+      this.formStatus = 'normal'
     },
     resetForm () {
-      this.form = {
-        permission: undefined,
-        name: undefined,
-        menuId: undefined,
-        parentId: this.currentId,
-        url: undefined,
-        icon: undefined,
-        sort: undefined,
-        component: undefined,
-        type: undefined,
-        method: undefined,
-        path: undefined
-      }
+      this.form = {}
+      this.form.is_parent = 0
+      this.form.order_list = 10
     }
   }
 }

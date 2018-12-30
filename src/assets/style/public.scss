@@ -26,6 +26,8 @@ $prefix: d2;
   align-items: center;
   flex-direction: row;
 }
+
+// flex 垂直居中
 %flex-center-col {
   display: flex;
   justify-content: center;

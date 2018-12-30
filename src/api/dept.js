@@ -17,9 +17,17 @@ export function fetchLazyTree (query) {
   })
 }
 
+export function fetchDeptUserTree (query) {
+  return request({
+    url: deptApi.findDeptUserTree,
+    method: 'get',
+    params: query
+  })
+}
+
 export function addObj (obj) {
   return request({
-    url: '/admin/dept/',
+    url: deptApi.saveOrUpdate,
     method: 'post',
     data: obj
   })
@@ -35,14 +43,14 @@ export function getObj (id) {
 
 export function delObj (id) {
   return request({
-    url: '/admin/dept/' + id,
+    url: deptApi.delete + '/' + id,
     method: 'delete'
   })
 }
 
 export function putObj (obj) {
   return request({
-    url: '/admin/dept/',
+    url: deptApi.saveOrUpdate,
     method: 'put',
     data: obj
   })

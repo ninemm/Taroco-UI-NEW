@@ -158,7 +158,7 @@ export default {
         page: 1,
         limit: 10,
         isAsc: true,
-        orderByField: 'dept_id asc, order_list'
+        orderByField: 'dept_id order_list'
       },
       form: {
         order_list: 10

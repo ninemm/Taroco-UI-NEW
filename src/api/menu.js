@@ -17,7 +17,7 @@ export function fetchTree (query) {
 
 export function addObj (obj) {
   return request({
-    url: '/admin/menu/',
+    url: menuApi.saveOrUpdate,
     method: 'post',
     data: obj
   })
@@ -25,21 +25,21 @@ export function addObj (obj) {
 
 export function getObj (id) {
   return request({
-    url: '/admin/menu/' + id,
+    url: menuApi.findById + '/' + id,
     method: 'get'
   })
 }
 
 export function delObj (id) {
   return request({
-    url: '/admin/menu/' + id,
+    url: menuApi.delete + '/' + id,
     method: 'delete'
   })
 }
 
 export function putObj (obj) {
   return request({
-    url: '/admin/menu/',
+    url: menuApi.saveOrUpdate,
     method: 'put',
     data: obj
   })
