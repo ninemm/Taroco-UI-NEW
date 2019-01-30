@@ -106,7 +106,7 @@ import { fetchList, addObj, putObj, delObj } from '@/api/systems'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'table_upms_systems',
+  name: 'upms-system',
   data () {
     return {
       list: null,

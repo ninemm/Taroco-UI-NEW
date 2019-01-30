@@ -9,9 +9,9 @@
       <!-- 表单部分 -->
       <div class="form-group">
         <el-card>
-          <el-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin">
+          <el-form ref="loginForm" :inline="true" :rules="rules" :model="formLogin">
             <el-form-item  prop="username">
-              <el-input type="text" v-model="formLogin.mobile" placeholder="用户名">
+              <el-input type="text" v-model="formLogin.mobile" @blur="showAccount" placeholder="用户名">
                 <d2-icon slot="prepend" name="user-circle-o"></d2-icon>
               </el-input>
             </el-form-item>
@@ -28,6 +28,15 @@
                 </template>
               </el-input>
             </el-form-item>
+            <el-form-item prop="deptId" v-if="isShow" label="账套" label-width="45px">
+              <el-select v-model="formLogin.deptId" clearable placeholder="请选择账套" style="width: 200px;">
+                <el-option v-for="item in accountOptions"
+                  :key="item.deptId"
+                  :label="item.deptName"
+                  :value="item.deptId">
+                </el-option>
+              </el-select>
+            </el-form-item>
             <el-button @click="submit" type="primary" class="button-login">登录</el-button>
           </el-form>
         </el-card>
@@ -39,12 +48,15 @@
 <script>
 /* eslint-disable */
 require('particles.js')
-import config from './config/default'
-import { mapActions } from 'vuex'
 import util from '@/libs/util'
+import { mapActions } from 'vuex'
+import config from './config/default'
+import { fetchAccountOptions } from '@/api/user'
 export default {
   data () {
     return {
+      isShow: true,
+      accountOptions: [],
       // 表单
       formLogin: {
         mobile: '18627771043',
@@ -72,8 +84,9 @@ export default {
   },
   mounted () {
     // 初始化例子插件
-    particlesJS('login', config);
-    this.refreshCode();
+    particlesJS('login', config)
+    this.refreshCode()
+    this.showAccount()
   },
   beforeDestroy () {
     // 销毁 particlesJS
@@ -91,11 +104,25 @@ export default {
     /**
      * 刷新验证码
      */
-    refreshCode() {
+    refreshCode () {
       this.formLogin.code = "";
       this.formLogin.randomStr = util.randomLenNum(this.code.len, true);
-      //this.code.src = `${process.env.VUE_APP_BASE_URL}/admin/code/${this.formLogin.randomStr}`;
-      this.code.src = `http://127.0.0.1/code/${this.formLogin.randomStr}`;
+      this.code.src = `${process.env.VUE_APP_BASE_URL}/code/${this.formLogin.randomStr}`;
+    },
+
+    showAccount () {
+      if (this.formLogin.mobile) {
+        fetchAccountOptions({ mobile: this.formLogin.mobile }).then((res) => {
+          if (res.data && res.data.length > 1) {
+            this.accountOptions = res.data
+            this.isShow = true
+          } else {
+            this.formLogin.deptId = res.data[0].deptId
+          }
+        })
+      } else {
+        this.isShow = false
+      }
     },
     /**
      * @description 提交表单

@@ -90,7 +90,9 @@ util.formatRoutes = function (aMenu, parentPath) {
       path,
       component,
       name,
+      code,
       icon,
+      redirect,
       children
     } = oMenu
 
@@ -107,10 +109,12 @@ util.formatRoutes = function (aMenu, parentPath) {
           }
           require([`../${componentPath}.vue`], resolve)
         },
-        name: name,
+        name: code,
         icon: icon,
+        redirect: redirect,
         children: validatenull(children) ? [] : util.formatRoutes(children, path),
         meta: {
+          cache: true,
           requiresAuth: true,
           title: name
         }

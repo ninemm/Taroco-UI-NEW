@@ -53,28 +53,17 @@ export function delObj (id) {
   })
 }
 
-export function permissionUpd (roleId, menuIds) {
+export function updateRolePermission (data) {
   return request({
-    url: '/admin/role/roleMenuUpd',
+    url: roleApi.updatePermission,
     method: 'put',
-    data: {
-      roleId: roleId,
-      menuIds: menuIds
-    }
+    data: data
   })
 }
 
-export function fetchRoleTree (roleName) {
+export function fetchAllocatedPermission (roleId) {
   return request({
-    url: '/admin/menu/roleTree/' + roleName,
+    url: roleApi.allocatedPermission + '/' + roleId,
     method: 'get'
-  })
-}
-
-export function fetchDeptTree (query) {
-  return request({
-    url: '/admin/dept/tree',
-    method: 'get',
-    params: query
   })
 }

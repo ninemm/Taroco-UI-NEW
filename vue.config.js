@@ -10,10 +10,12 @@ const baseUrl = '/'
 
 module.exports = {
   baseUrl: baseUrl, // 根据你的实际情况更改这里
-  lintOnSave: true,
+  outputDir: 'dist', // 构建输出目录
+  lintOnSave: true, // eslint-loader 是否在保存的时候检查
   devServer: {
     publicPath: baseUrl // 和 baseUrl 保持一致
   },
+  parallel: require('os').cpus().length > 1, // 构建时开启多个进程处理babel编译
   // webpack 设置
   // 默认设置: https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-service/lib/config/base.js
   chainWebpack: config => {

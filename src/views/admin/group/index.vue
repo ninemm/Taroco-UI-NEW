@@ -1,5 +1,5 @@
 <template>
-<d2-container>
+<d2-container better-scroll>
   <!-- header 查询条件 -->
   <template slot="header">
     <el-form
@@ -19,69 +19,68 @@
         </el-form-item>
     </el-form>
   </template>
+
   <el-table
-        :key='tableKey'
-        :data="list"
-        v-loading="listLoading"
-        element-loading-text="拼命加载中..."
-        highlight-current-row
-        stripe
-        size="mini"
-        style="width: 100%">
+    :key='tableKey'
+    :data="list"
+    v-loading="listLoading"
+    element-loading-text="拼命加载中..."
+    highlight-current-row
+    stripe
+    size="mini"
+    style="width: 100%">
 
     <el-table-column align="center" label="序号">
       <template slot-scope="scope">
         <span>{{scope.row.order_list}}</span>
       </template>
     </el-table-column>
-
     <el-table-column align="center" label="用户组名称">
       <template slot-scope="scope">
         <span>{{scope.row.group_name }}</span>
       </template>
     </el-table-column>
-
     <el-table-column label="用户组编码">
       <template slot-scope="scope">
         <span>{{scope.row.group_code}}</span>
       </template>
     </el-table-column>
-
     <el-table-column align="center" label="描述">
       <template slot-scope="scope">
         <span>{{scope.row.description }}</span>
       </template>
     </el-table-column>
-
     <el-table-column align="center" label="创建时间">
       <template slot-scope="scope">
         <span>{{scope.row.create_date | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
       </template>
     </el-table-column>
-
     <el-table-column label="操作" width="220">
       <template slot-scope="scope">
         <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit"></el-button>
         <el-button size="mini" type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
-        <el-button size="mini" type="success" plain @click="handlePermission(scope.row)" icon="el-icon-rank">角色</el-button>
+        <el-tooltip content="给用户分组分配角色" placement="top">
+          <el-button size="mini" type="success" plain @click="handlePermission(scope.row)" icon="el-icon-rank">角色</el-button>
+        </el-tooltip>
       </template>
     </el-table-column>
   </el-table>
   <!-- footer 分页条 -->
   <template slot="footer">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30,50]"
-        :page-size="listQuery.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        style="margin: -10px;">
-      </el-pagination>
+    <el-pagination
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page.sync="listQuery.page"
+      :page-sizes="[10,20,30,50]"
+      :page-size="listQuery.limit"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      style="margin: -10px;">
+    </el-pagination>
   </template>
-  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="400px">
+
+  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="400px" append-to-body>
     <el-form :model="form" :rules="rules" ref="form" label-width="80px" size="small">
       <el-form-item label="行号" prop="id" v-if="dialogStatus == 'update'">
         <el-input v-model="form.id" :disabled=true />
@@ -106,12 +105,13 @@
     </div>
   </el-dialog>
 
-  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="800px">
+  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="800px" append-to-body>
     <div style="text-align: center">
       <el-transfer
         style="text-align: left; display: inline-block"
         v-model="checkedKeys"
         :data="roleOptions"
+        v-loading="loading"
         :titles="['角色列表', '选中角色列表']"
         :right-default-checked="checkedKeys"
         @change="handleChange"
@@ -122,7 +122,7 @@
       </el-transfer>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="updatePermession()" icon="el-icon-check">授 权</el-button>
+      <el-button type="primary" @click="updatePermession()" size="mini" icon="el-icon-check">授 权</el-button>
     </div>
   </el-dialog>
 </d2-container>
@@ -133,13 +133,14 @@ import { fetchList, addObj, putObj, delObj, fetchCheckedRoleList, updateGroupPer
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'table_upms_group',
+  name: 'upms-group',
   data () {
     return {
       roleOptions: [],
       checkedKeys: [],
       list: null,
       total: null,
+      loading: false,
       listLoading: true,
       listQuery: {
         page: 1,
@@ -236,11 +237,13 @@ export default {
       this.dialogStatus = 'update'
     },
     handlePermission (row) {
+      this.loading = true
+      this.dialogStatus = 'permission'
+      this.dialogPermissionVisible = true
       fetchCheckedRoleList(row.id).then(res => {
+        this.loading = false
         this.checkedKeys = res.data.checkedKeys
         this.roleOptions = res.data.roleOptions
-        this.dialogStatus = 'permission'
-        this.dialogPermissionVisible = true
         this.groupId = row.id
       })
     },

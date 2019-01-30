@@ -22,7 +22,8 @@ export const userApi = {
   saveOrUpdate: basePath + '/admin/user/saveOrUpdate',
   batchDelete: basePath + '/admin/user/batchDelete',
   uploadFile: basePath + '/admin/user/batchImport',
-  fetchAllOptions: basePath + '/admin/user/findAllOptions'
+  fetchAllOptions: basePath + '/admin/user/findAllOptions',
+  fetchAccountOptions: basePath + '/admin/user/findAccountOptions'
 }
 
 export const deptApi = {
@@ -44,7 +45,9 @@ export const roleApi = {
   save: basePath + '/admin/role/save',
   delete: basePath + '/admin/role/delete',
   update: basePath + '/admin/role/update',
-  batchDelete: basePath + '/admin/role/batchDelete'
+  batchDelete: basePath + '/admin/role/batchDelete',
+  updatePermission: basePath + '/admin/role/updatePermission',
+  allocatedPermission: basePath + '/admin/role/findAllocatedPermission'
 }
 
 export const groupApi = {
@@ -67,7 +70,9 @@ export const stationApi = {
   delete: basePath + '/admin/station/delete',
   update: basePath + '/admin/station/update',
   saveOrUpdate: basePath + '/admin/station/saveOrUpdate',
-  batchDelete: basePath + '/admin/station/batchDelete'
+  batchDelete: basePath + '/admin/station/batchDelete',
+  updatePermission: basePath + '/admin/station/updatePermission',
+  allocatedPermission: basePath + '/admin/station/findAllocatedPermission'
 }
 
 export const operationApi = {
@@ -76,13 +81,15 @@ export const operationApi = {
   save: basePath + '/admin/operation/save',
   delete: basePath + '/admin/operation/delete',
   update: basePath + '/admin/operation/update',
-  batchDelete: basePath + '/admin/operation/batchDelete'
+  batchDelete: basePath + '/admin/operation/batchDelete',
+  findListByModuleId: basePath + '/admin/operation/findListByModuleId'
 }
 
 export const moduleApi = {
   list: basePath + '/admin/module/list',
   findById: basePath + '/admin/module/findById',
   findListAsTree: basePath + '/admin/module/findListAsTree',
+  moduleTree: basePath + '/admin/module/moduleTree',
   save: basePath + '/admin/module/save',
   delete: basePath + '/admin/module/delete',
   update: basePath + '/admin/module/update',
@@ -109,9 +116,6 @@ export const dictApi = {
 }
 
 export const optionApi = {
-  findById: basePath + '/admin/option/findById',
-  save: basePath + '/admin/option/save',
-  delete: basePath + '/admin/option/delete',
-  update: basePath + '/admin/option/update',
-  batchDelete: basePath + '/admin/option/batchDelete'
+  findAll: basePath + '/admin/option/findAll',
+  saveOrUpdate: basePath + '/admin/option/saveOrUpdate'
 }

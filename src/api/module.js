@@ -17,6 +17,13 @@ export function fetchTreeList (query) {
   })
 }
 
+export function fetchModuleTree () {
+  return request({
+    url: moduleApi.moduleTree,
+    method: 'get'
+  })
+}
+
 export function addObj (obj) {
   return request({
     url: moduleApi.save,

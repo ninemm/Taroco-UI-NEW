@@ -16,6 +16,13 @@ export function fetchListAsSelect () {
   })
 }
 
+export function fetchListByModule (moduleId) {
+  return request({
+    url: operationApi.findListByModuleId + '/' + moduleId,
+    method: 'get'
+  })
+}
+
 export function addObj (obj) {
   return request({
     url: operationApi.save,

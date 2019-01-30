@@ -53,6 +53,14 @@ export function fetchAllOptions () {
   })
 }
 
+export function fetchAccountOptions (query) {
+  return request({
+    url: userApi.fetchAccountOptions,
+    method: 'get',
+    params: query
+  })
+}
+
 export function uploadFile (obj) {
   return request({
     url: userApi.uploadFile,

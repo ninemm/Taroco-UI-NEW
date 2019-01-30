@@ -1,72 +1,66 @@
 <template>
-<d2-container>
+<d2-container better-scroll>
   <!-- header 查询条件 -->
   <template slot="header">
-    <el-form
-      :inline="true"
-      :model="listQuery"
-      size="mini"
-      style="margin-bottom: -18px;">
-        <el-form-item label="岗位名称" prop="stationName">
-          <el-input @keyup.enter.native="handleFilter" placeholder="岗位名称" v-model="listQuery.stationName" clearable>
-          </el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="default" @click="handleFilter" icon="el-icon-search">搜 索</el-button>
-        </el-form-item>
-        <el-form-item style="float: right">
-          <el-button style="float: right" @click="handleCreate" type="primary" icon="el-icon-plus">新 增</el-button>
-        </el-form-item>
+    <el-form :inline="true" :model="listQuery" size="mini" style="margin-bottom: -18px;">
+      <el-form-item label="岗位名称" prop="stationName">
+        <el-input @keyup.enter.native="handleFilter" placeholder="岗位名称" v-model="listQuery.stationName" clearable>
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="default" @click="handleFilter" icon="el-icon-search">搜 索</el-button>
+      </el-form-item>
+      <el-form-item style="float: right">
+        <el-button style="float: right" @click="handleCreate" type="primary" icon="el-icon-plus">新 增</el-button>
+      </el-form-item>
     </el-form>
   </template>
-  <el-table
-        :key='tableKey'
-        :data="list"
-        v-loading="listLoading"
-        element-loading-text="拼命加载中..."
-        highlight-current-row
-        stripe
-        size="mini"
-        style="width: 100%">
 
+  <el-table
+    :key='tableKey'
+    :data="list"
+    v-loading="listLoading"
+    element-loading-text="拼命加载中..."
+    highlight-current-row
+    stripe
+    size="mini"
+    style="width: 100%">
     <el-table-column align="center" label="序号" width="60">
       <template slot-scope="scope">
         <span>{{scope.row.order_list}}</span>
       </template>
     </el-table-column>
-
     <el-table-column align="center" label="岗位名称">
       <template slot-scope="scope">
         <span>{{scope.row.station_name }}</span>
       </template>
     </el-table-column>
-
     <el-table-column label="上级岗位">
       <template slot-scope="scope">
         <span>{{scope.row.parent_id}}</span>
       </template>
     </el-table-column>
-
     <el-table-column align="center" label="岗位描述">
       <template slot-scope="scope">
         <span>{{scope.row.description }}</span>
       </template>
     </el-table-column>
-
     <el-table-column align="center" label="创建时间">
       <template slot-scope="scope">
         <span>{{scope.row.create_date | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
       </template>
     </el-table-column>
-
     <el-table-column label="操作" width="220">
       <template slot-scope="scope">
         <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit"></el-button>
         <el-button size="mini" type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
-        <el-button size="mini" type="success" plain @click="handlePermission(scope.row)" icon="el-icon-rank"></el-button>
+        <el-tooltip content="给岗位分配操作权限" placement="top">
+          <el-button size="mini" type="success" plain @click="handlePermission(scope.row)" icon="el-icon-rank">授权</el-button>
+        </el-tooltip>
       </template>
     </el-table-column>
   </el-table>
+
   <!-- footer 分页条 -->
   <template slot="footer">
       <el-pagination
@@ -81,7 +75,8 @@
         style="margin: -10px;">
       </el-pagination>
   </template>
-  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="400px">
+
+  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="400px" append-to-body>
     <el-form :model="form" :rules="rules" ref="form" label-width="80px" size="small">
       <el-form-item label="行号" prop="id" v-if="dialogStatus == 'update'">
         <el-input v-model="form.id" :disabled=true />
@@ -106,40 +101,67 @@
     </div>
   </el-dialog>
 
-  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="800px" top="20px">
-    <el-tree class="filter-tree" :data="treeData" :default-checked-keys="checkedKeys" check-strictly node-key="id" highlight-current :props="defaultProps" show-checkbox ref="menuTree" :filter-node-method="filterNode">
-    </el-tree>
-    <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="updatePermession(roleId, roleCode)" icon="el-icon-check">授 权</el-button>
-    </div>
+  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="800px" @close="handleClose" append-to-body>
+    <el-row :gutter="20">
+      <el-col :span="10">
+        <el-card header="系统模块树" body-style="{padding: '5px'}">
+          <el-input v-model="filterText" size="mini" placeholder="输入关键字进行过滤" />
+          <div style="height: 300px;">
+            <el-scrollbar style="height: 100%;">
+              <el-tree
+                :data="moduleTreeData"
+                node-key="id"
+                ref="moduleTree"
+                highlight-current
+                :props="defaultProps"
+                :default-expanded-keys="defaultExpandedKeys"
+                :filter-node-method="filterNode"
+                @node-click="handleNodeClick">
+              </el-tree>
+            </el-scrollbar>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="14">
+        <el-card header="岗位权限设置" body-style="{padding: '5px'}" v-loading="loading">
+          <el-alert title="勾选功能权限，自动绑定权限" type="warning" class="d2-mb-20" show-icon/>
+          <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" class="d2-mb-10">全选</el-checkbox>
+          <el-form>
+            <el-form-item>
+              <el-checkbox-group v-model="checkedKeys" @change="handleCheckedOperationChange">
+                <el-checkbox v-for="item in operationData" :label="item.id" :key="item.id">{{ item.operation_name }}</el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+    </el-row>
   </el-dialog>
 </d2-container>
 </template>
 
 <script>
-import {
-  fetchList,
-  addObj,
-  putObj,
-  delObj
-} from '@/api/station'
-// import { fetchTree } from '@/api/menu'
+import { fetchModuleTree } from '@/api/module'
+import { fetchListByModule } from '@/api/operation'
+import { fetchList, addObj, putObj, delObj, updateStationPermission, fetchAllocatedPermission } from '@/api/station'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'table_role',
+  name: 'upms-station',
   data () {
     return {
-      treeData: [],
-      treeDeptData: [],
       checkedKeys: [],
+      moduleTreeData: [],
       defaultProps: {
         children: 'children',
         label: 'name'
       },
+      filterText: '',
+      defaultExpandedKeys: ['0'],
       list: null,
       total: null,
-      listLoading: true,
+      loading: false,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 10,
@@ -149,8 +171,8 @@ export default {
       form: {
         order_list: 10
       },
-      roleId: undefined,
-      roleCode: undefined,
+      moduleId: undefined,
+      stationId: undefined,
       rules: {
         station_name: [
           {
@@ -175,14 +197,16 @@ export default {
         ]
       },
       statusOptions: ['0', '1'],
-      rolesOptions: undefined,
       dialogFormVisible: false,
       dialogPermissionVisible: false,
+      isIndeterminate: true,
+      checkAll: false,
+      operationData: [],
       dialogStatus: '',
       textMap: {
         update: '编辑',
         create: '创建',
-        permission: '分配权限'
+        permission: '岗位权限分配'
       },
       tableKey: 0,
       roleManager_btn_add: false,
@@ -200,6 +224,11 @@ export default {
   },
   computed: {
     ...mapGetters(['elements', 'permissions'])
+  },
+  watch: {
+    filterText (val) {
+      this.$refs.moduleTree.filter(val)
+    }
   },
   methods: {
     handleFilter () {
@@ -228,16 +257,21 @@ export default {
       this.dialogFormVisible = true
     },
     handleUpdate (row) {
-      this.form.id = row.id
-      this.form.station_name = row.station_name
-      this.form.order_list = row.order_list
-      this.form.description = row.description
+      this.form = row
       this.dialogFormVisible = true
       this.dialogStatus = 'update'
     },
+    handlePermission (row) {
+      fetchModuleTree().then(res => {
+        this.moduleTreeData = res.data
+        this.dialogStatus = 'permission'
+        this.dialogPermissionVisible = true
+        this.stationId = row.id
+      })
+    },
     filterNode (value, data) {
       if (!value) return true
-      return data.label.indexOf(value) !== -1
+      return data.name.indexOf(value) !== -1
     },
     handleDelete (row) {
       let that = this
@@ -255,6 +289,34 @@ export default {
           })
         })
       }).catch(() => {})
+    },
+    handleNodeClick (data, node) {
+      this.loading = true
+      fetchAllocatedPermission(this.stationId)
+        .then(res => {
+          this.checkedKeys = res.data
+          this.moduleId = data.id
+          return fetchListByModule(data.id)
+        })
+        .then(res => {
+          this.operationData = res.data
+          this.loading = false
+        })
+    },
+    handleCheckAllChange (val) {
+      this.checkedKeys = val ? Array.from(this.operationData, item => item.id) : []
+      this.isIndeterminate = false
+      this.updatePermission()
+    },
+    handleCheckedOperationChange (val) {
+      let checkedCount = val.length
+      this.checkAll = checkedCount === this.operationData.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.operationData.length
+      this.updatePermission()
+    },
+    handleClose () {
+      this.checkedKeys = []
+      this.operationData = []
     },
     create (formName) {
       const set = this.$refs
@@ -299,6 +361,22 @@ export default {
         }
       })
     },
+    updatePermission () {
+      let operationIds = this.checkedKeys.join(',')
+      let params = {
+        'stationId': this.stationId,
+        'moduleId': this.moduleId,
+        'operationIds': operationIds
+      }
+      updateStationPermission(params).then(() => {
+        this.$notify({
+          title: '成功',
+          message: '分配权限成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
     resetTemp () {
       this.form = {
         id: undefined,
@@ -310,3 +388,18 @@ export default {
   }
 }
 </script>
+
+<style>
+  .el-checkbox+.el-checkbox {
+    margin-left: 0;
+  }
+  .el-checkbox-group .el-checkbox {
+    padding-right: 20px;
+  }
+  .el-card__body {
+    padding: 10px;
+  }
+  .el-scrollbar .el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
+</style>

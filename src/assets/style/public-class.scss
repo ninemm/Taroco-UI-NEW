@@ -56,6 +56,19 @@ $sizes: (0, 5, 10, 15, 20);
   .#{$prefix}-pr-#{nth($sizes, $index)} { padding-right: #{nth($sizes, $index)}px !important; }
   .#{$prefix}-pb-#{nth($sizes, $index)} { padding-bottom: #{nth($sizes, $index)}px !important; }
   .#{$prefix}-pl-#{nth($sizes, $index)} { padding-left: #{nth($sizes, $index)}px !important; }
+
+  .#{$prefix}-ptb-#{nth($sizes, $index)} { padding: #{nth($sizes, $index)}px 0 !important; }
+  .#{$prefix}-plr-#{nth($sizes, $index)} { padding: 0 #{nth($sizes, $index)}px !important; }
+  .#{$prefix}-mtb-#{nth($sizes, $index)} { margin: #{nth($sizes, $index)}px 0 !important; }
+  .#{$prefix}-mlr-#{nth($sizes, $index)} { margin: 0 #{nth($sizes, $index)}px !important; }
+}
+
+// 字体大小
+
+$fsizes: (12, 13, 14, 16, 18, 20);
+
+@for $index from 1 to 6 {
+  .#{$prefix}-font-size-#{nth($fsizes, $index)} { font-size: #{nth($fsizes, $index)}px !important; }
 }
 
 // 快速使用
@@ -94,3 +107,46 @@ $sizes: (0, 5, 10, 15, 20);
   font-size: 14px;
   padding-right: 8px;
 }
+
+// 页面布局
+
+.#{$prefix}-panel {
+  @extend %card;
+  padding: 15px;
+}
+
+.#{$prefix}-panel__hd {
+  margin-bottom: 15px;
+}
+
+.#{$prefix}-panel__bd {
+  font-size: 12px;
+}
+
+.#{$prefix}-help-text {
+  display: block;
+  size: 12px;
+  line-height: 20px;
+  color: $color-text-sub;
+  margin-block-start: .4em;
+  margin-block-end: 0;
+  cursor: text;
+}
+
+.#{$prefix}-help-box {
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  color: $color-tips-text;
+  font-size: 14px;
+  line-height: 30px;
+  border: 1px solid $color-tips-border;
+  background: $color-tips-bg;
+  em {
+    color: $color-primary;
+  }
+  i {
+    color: $color-warning;
+  }
+}
+// dashboard

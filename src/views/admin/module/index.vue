@@ -146,7 +146,7 @@ import { fetchListAsSelect } from '@/api/systems'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'table_upms_module',
+  name: 'upms-module',
   data () {
     return {
       list: null,

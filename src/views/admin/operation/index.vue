@@ -121,15 +121,20 @@
         <el-button size="small" v-if="dialogStatus=='create'" type="primary" @click="create('form')" icon="el-icon-check">确 定</el-button>
         <el-button size="small" v-else type="primary" @click="update('form')" icon="el-icon-check">修 改</el-button>
       </div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogTreeVisible" width="50%" append-to-body>
+      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogTreeVisible" width="40%" append-to-body>
         <el-tree
           lazy
           node-key="id"
           class="module-tree"
           highlight-current
           :props="defaultProps"
-          :load="findModuleTreeList"
-          :render-content="renderContent">
+          :load="findModuleTreeList">
+          <span class="d2-tree-node" slot-scope="{ node, data }">
+            <span>{{ node.label }}</span>
+            <span>
+              <el-button v-if="node.level > 1" type="text" @click="() => confirm(data)" style="color:#F56C6C;"><i class="el-icon-circle-check" title="确定"></i></el-button>
+            </span>
+          </span>
         </el-tree>
       </el-dialog>
     </el-dialog>
@@ -142,7 +147,7 @@ import { fetchTreeList } from '@/api/module'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'table_upms_operation',
+  name: 'upms-operation',
   data () {
     return {
       list: null,
@@ -329,7 +334,7 @@ export default {
           <span class="custom-tree-node">
             <span>{node.label}</span>
             <span>
-              <el-button size="mini" type="text" on-click={ () => this.confirm(data) }>确定</el-button>
+              <el-button size="mini" type="text" on-click={ () => this.confirm(data) }><i class="el-icon-circle-check" title="确定"></i></el-button>
             </span>
           </span>
         )

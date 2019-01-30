@@ -18,19 +18,19 @@
             @node-click="handleNodeClick"
             @node-expand="nodeExpand"
             @node-collapse="nodeCollapse">
-            <span class="d2-tree-node" slot-scope="{ node, data }">
+            <span class="d2-tree-node" slot-scope="{ node }">
               <span>{{ node.label }}</span>
               <span>
-                <el-button type="text" @click="() => handleAdd(node)">新增</el-button>
-                <el-button v-if="node.level > 1" type="text" @click="() => handleEdit(node)">编辑</el-button>
-                <el-button v-if="node.level > 1" type="text" @click="() => handleDelete(node)" style="color:#F56C6C;">删除</el-button>
+                <el-button type="text" @click="() => handleAdd(node)"><i class="el-icon-circle-plus-outline" title="新增"></i></el-button>
+                <el-button v-if="node.level > 1" type="text" @click="() => handleEdit(node)"><i class="el-icon-edit-outline" title="编辑"></i></el-button>
+                <el-button v-if="node.level > 1" type="text" @click="() => handleDelete(node)" style="color:#F56C6C;"><i class="el-icon-delete" title="删除"></i></el-button>
               </span>
             </span>
           </el-tree>
         </el-card>
       </el-col>
       <el-col :span="14">
-        <el-card :header="textMap[formStatus]" body-style="{padding: '5px'}">
+        <el-card :header="textMap[formStatus]" body-style="{padding: '5px'}" v-loading="loading">
           <el-form :label-position="labelPosition" :rules="rules" label-width="100px" :model="form" ref="form" size="small">
             <input type="hidden" v-model="form.id" />
             <el-form-item label="上级部门" prop="parent_id">
@@ -105,11 +105,12 @@
 import { fetchTree, fetchDeptUserTree, getObj, addObj, delObj, putObj } from '@/api/dept'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'table_upms_department',
+  name: 'upms-dept',
   data () {
     return {
       formEdit: true,
       formStatus: 'normal',
+      loading: false,
       listQuery: {
         name: undefined
       },
@@ -118,7 +119,7 @@ export default {
         order_list: 10
       },
       deptTreeData: [],
-      aExpandedKeys: [],
+      aExpandedKeys: ['0'],
       oExpandedKey: {
         // key (from tree id) : expandedOrNot boolean
       },
@@ -247,7 +248,7 @@ export default {
     handleEdit (node) {
       this.formEdit = false
       this.formStatus = 'update'
-
+      this.loading = true
       getObj(node.data.id).then(res => {
         let data = res.data
         this.form = data
@@ -259,6 +260,7 @@ export default {
         if (data.reviewer && data.reviewer.realname) {
           this.form.order_reviewer_name = data.reviewer.realname
         }
+        this.loading = false
       })
     },
     handleAdd (node) {

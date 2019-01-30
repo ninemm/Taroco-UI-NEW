@@ -7,7 +7,7 @@ import request from '@/plugin/axios'
  * @param {验证码} code
  * @param {验证码随机字符串} randomStr
  */
-export const loginByUsername = (mobile, password, code, randomStr) => {
+export const loginByUsername = (mobile, password, deptId, code, randomStr) => {
   var grantType = 'password'
   var scope = 'server'
   return request({
@@ -16,7 +16,7 @@ export const loginByUsername = (mobile, password, code, randomStr) => {
     //   'Jwt': 'Basic dGFyb2NvOnRhcm9jbw=='
     // },
     method: 'post',
-    params: { mobile, password, randomStr, code, 'grant_type': grantType, scope }
+    params: { mobile, password, deptId, code, randomStr, 'grant_type': grantType, scope }
   })
 }
 

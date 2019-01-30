@@ -154,12 +154,7 @@
     </template>
 
     <!-- 新增用户弹框 -->
-    <el-dialog
-      width="700px"
-      :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
-      @open="initOptions"
-      append-to-body>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="700px" @open="initOptions" append-to-body>
       <el-form :model="form" :rules="rules" ref="form" label-width="100px" size="mini">
         <el-form-item label="姓名" prop="realname">
           <el-input v-model="form.realname" placeholder="请输入姓名"></el-input>
@@ -179,11 +174,7 @@
 
         <el-form-item label="用户类型" prop="type">
           <el-select v-model="form.type" clearable readonly style="width: 550px" placeholder="请选择用户类型">
-            <el-option
-              v-for="item in typeOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+            <el-option v-for="item in typeOptions" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -197,11 +188,7 @@
         <el-row>
           <el-form-item label="所属用户组" prop="group_id">
             <el-select v-model="form.group_id" multiple clearable readonly @change="handleGroupChange" style="width: 550px" placeholder="请选择用户组">
-              <el-option
-                v-for="item in groupOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+              <el-option v-for="item in groupOptions" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
             <input type="hidden" v-model="form.group_name" />
@@ -210,11 +197,7 @@
 
         <el-form-item label="岗位" prop="station_id">
           <el-select v-model="form.station_id" @change="handleStationChange" multiple clearable readonly style="width: 550px" placeholder="请选择岗位">
-            <el-option
-              v-for="item in stationOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+            <el-option v-for="item in stationOptions" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
           <input type="hidden" v-model="form.station_name" />
@@ -232,11 +215,9 @@
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')" icon="el-icon-check" size="small">确 定</el-button>
         <el-button v-else type="primary" @click="update('form')" icon="el-icon-check" size="small">修 改</el-button>
       </div>
+
       <el-dialog title="部门选择" :visible.sync="dialogDeptVisible" width="400px" append-to-body>
-        <el-tree
-          lazy
-          node-key="id"
-          class="module-tree"
+        <el-tree lazy node-key="id" class="module-tree"
           highlight-current
           :props="defaultProps"
           :load="loadDeptTree"
@@ -291,7 +272,7 @@ import { fetchLazyTree } from '@/api/dept'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'table_upms_user',
+  name: 'upms-user',
   data () {
     return {
       treeDeptData: [],
@@ -561,8 +542,9 @@ export default {
       })
     },
     cancel (formName) {
+      this.form = {}
       this.dialogFormVisible = false
-      this.$refs[formName].resetFields()
+      // this.$refs[formName].resetFields()
     },
     closeDeptDialog () {
       this.dialogDeptVisible = false
@@ -609,7 +591,7 @@ export default {
           <span class="custom-tree-node">
             <span>{node.label}</span>
             <span>
-              <el-button size="mini" type="text" on-click={ () => this.confirm(data) }>确定</el-button>
+              <el-button size="mini" type="text" on-click={ () => this.confirm(data) }><i class="el-icon-circle-check" title="确认"></i></el-button>
             </span>
           </span>
         )

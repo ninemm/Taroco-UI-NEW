@@ -45,3 +45,18 @@ export function putObj (obj) {
     data: obj
   })
 }
+
+export function fetchAllocatedPermission (stationId) {
+  return request({
+    url: stationApi.allocatedPermission + '/' + stationId,
+    method: 'get'
+  })
+}
+
+export function updateStationPermission (params) {
+  return request({
+    url: stationApi.updatePermission,
+    method: 'put',
+    data: params
+  })
+}
