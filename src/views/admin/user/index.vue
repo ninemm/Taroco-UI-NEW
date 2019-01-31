@@ -2,35 +2,24 @@
   <d2-container better-scroll>
     <!-- header 查询条件 -->
     <template slot="header">
-      <el-form
-        :inline="true"
-        :model="listQuery"
-        size="mini"
-        style="margin-bottom: -18px;">
-          <el-form-item label="姓名" prop="realname">
-            <el-input @keyup.enter.native="handleFilter" v-model="listQuery.realname" clearable placeholder="姓名">
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="default" @click="handleFilter" icon="el-icon-search">搜 索</el-button>
-          </el-form-item>
-          <el-form-item style="float: right">
-            <el-button v-if="sys_user_add" @click="handleCreate" type="primary" icon="el-icon-plus">新 增</el-button>
-            <el-button v-if="sys_user_add" @click="dialogFileVisible = true" type="primary" icon="el-icon-upload">导 入</el-button>
-            <el-button v-if="sys_user_del" @click="handleBatchDelete" type="danger" icon="el-icon-delete">批量删除</el-button>
-          </el-form-item>
+      <el-form :inline="true" :model="listQuery" size="mini" style="margin-bottom: -18px;">
+        <el-form-item label="姓名" prop="realname">
+          <el-input @keyup.enter.native="handleFilter" v-model="listQuery.realname" clearable placeholder="姓名">
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="default" @click="handleFilter" icon="el-icon-search">搜 索</el-button>
+        </el-form-item>
+        <el-form-item style="float: right">
+          <el-button v-if="sys_user_add" @click="handleCreate" type="primary" icon="el-icon-plus">新 增</el-button>
+          <el-button v-if="sys_user_add" @click="dialogFileVisible = true" type="primary" icon="el-icon-upload">导 入</el-button>
+          <el-button v-if="sys_user_del" @click="handleBatchDelete" type="danger" icon="el-icon-delete">批量删除</el-button>
+        </el-form-item>
       </el-form>
     </template>
     <!-- table表格 -->
-    <el-table
-      :key='tableKey'
-      :data="list"
-      stripe
-      size="mini"
-      v-loading="listLoading"
-      element-loading-text="拼命加载中..."
+    <el-table :key='tableKey' :data="list" stripe size="mini" v-loading="listLoading" style="width: 100%"
       highlight-current-row
-      style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -140,26 +129,25 @@
     </el-table>
     <!-- footer 分页条 -->
     <template slot="footer">
-        <el-pagination
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="listQuery.page"
-          :page-sizes="[10,20,30,50]"
-          :page-size="listQuery.limit"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          style="margin: -10px;">
-        </el-pagination>
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="listQuery.page"
+        :page-sizes="[10,20,30,50]"
+        :page-size="listQuery.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        style="margin: -10px;">
+      </el-pagination>
     </template>
 
     <!-- 新增用户弹框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="700px" @open="initOptions" append-to-body>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="700px" @open="handleOpen" append-to-body>
       <el-form :model="form" :rules="rules" ref="form" label-width="100px" size="mini">
         <el-form-item label="姓名" prop="realname">
           <el-input v-model="form.realname" placeholder="请输入姓名"></el-input>
         </el-form-item>
-
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" placeholder="请输用户名"></el-input>
         </el-form-item>
@@ -167,18 +155,15 @@
         <el-form-item v-if="dialogStatus == 'create'" label="密码" prop="password">
           <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
-
         <el-form-item label="手机号" prop="mobile">
           <el-input v-model="form.mobile" placeholder="验证码登录使用"></el-input>
         </el-form-item>
 
         <el-form-item label="用户类型" prop="type">
           <el-select v-model="form.type" clearable readonly style="width: 550px" placeholder="请选择用户类型">
-            <el-option v-for="item in typeOptions" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
+            <el-option v-for="item in typeOptions" :key="item.value" :label="item.name" :value="item.value"> </el-option>
           </el-select>
         </el-form-item>
-
         <el-form-item label="所属部门" prop="department_name">
           <el-input v-model="form.department_name" placeholder="请选择部门" suffix-icon="el-icon-search" @focus="handleDept()" readonly>
           </el-input>
@@ -188,17 +173,15 @@
         <el-row>
           <el-form-item label="所属用户组" prop="group_id">
             <el-select v-model="form.group_id" multiple clearable readonly @change="handleGroupChange" style="width: 550px" placeholder="请选择用户组">
-              <el-option v-for="item in groupOptions" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
+              <el-option v-for="item in groupOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
             <input type="hidden" v-model="form.group_name" />
           </el-form-item>
         </el-row>
 
         <el-form-item label="岗位" prop="station_id">
-          <el-select v-model="form.station_id" @change="handleStationChange" multiple clearable readonly style="width: 550px" placeholder="请选择岗位">
-            <el-option v-for="item in stationOptions" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
+          <el-select v-model="form.station_id" multiple clearable readonly @change="handleStationChange" style="width: 550px" placeholder="请选择用户岗位">
+            <el-option v-for="item in stationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
           <input type="hidden" v-model="form.station_name" />
         </el-form-item>
@@ -217,11 +200,7 @@
       </div>
 
       <el-dialog title="部门选择" :visible.sync="dialogDeptVisible" width="400px" append-to-body>
-        <el-tree lazy node-key="id" class="module-tree"
-          highlight-current
-          :props="defaultProps"
-          :load="loadDeptTree"
-          :render-content="renderContent">
+        <el-tree lazy class="module-tree" node-key="id" highlight-current :props="defaultProps" :load="loadDeptTree" :render-content="renderContent">
         </el-tree>
         <div slot="footer" class="dialog-footer">
           <el-button @click="closeDeptDialog" icon="el-icon-close" size="small">取 消</el-button>
@@ -431,7 +410,7 @@ export default {
       this.getList()
     },
     handleCreate () {
-      this.resetTemp()
+      this.resetForm()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
@@ -511,7 +490,7 @@ export default {
       })
       return names.join(',')
     },
-    initOptions () {
+    handleOpen () {
       fetchAllOptions().then(res => {
         if (res.data.groupOptions) {
           this.groupOptions = res.data.groupOptions
@@ -519,7 +498,9 @@ export default {
         if (res.data.stationOptions) {
           this.stationOptions = res.data.stationOptions
         }
-        this.typeOptions = res.data.typeOptions
+        if (res.data.typeOptions) {
+          this.typeOptions = res.data.typeOptions
+        }
       })
     },
     create (formName) {
@@ -542,7 +523,7 @@ export default {
       })
     },
     cancel (formName) {
-      this.form = {}
+      this.resetForm()
       this.dialogFormVisible = false
       // this.$refs[formName].resetFields()
     },
@@ -616,9 +597,12 @@ export default {
         this.getList()
       })
     },
-    resetTemp () {
+    resetForm () {
+      // 多选下拉框如果为空值，在关闭弹窗时会报错
       this.form = {
-        status: 1
+        status: 1,
+        group_id: '',
+        station_id: ''
       }
     }
   }

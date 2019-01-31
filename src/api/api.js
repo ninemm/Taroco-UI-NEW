@@ -82,6 +82,7 @@ export const operationApi = {
   delete: basePath + '/admin/operation/delete',
   update: basePath + '/admin/operation/update',
   batchDelete: basePath + '/admin/operation/batchDelete',
+  addMenu: basePath + '/admin/operation/addMenu',
   findListByModuleId: basePath + '/admin/operation/findListByModuleId'
 }
 
@@ -109,9 +110,8 @@ export const systemApi = {
 export const dictApi = {
   list: basePath + '/admin/dict/list',
   findById: basePath + '/admin/dict/findById',
-  save: basePath + '/admin/dict/save',
+  saveOrUpdate: basePath + '/admin/dict/saveOrUpdate',
   delete: basePath + '/admin/dict/delete',
-  update: basePath + '/admin/dict/update',
   batchDelete: basePath + '/admin/dict/batchDelete'
 }
 

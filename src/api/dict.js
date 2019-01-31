@@ -1,8 +1,9 @@
 import request from '@/plugin/axios'
+import { dictApi } from './api'
 
 export function fetchList (query) {
   return request({
-    url: '/admin/dict/dictPage',
+    url: dictApi.list,
     method: 'get',
     params: query
   })
@@ -10,7 +11,7 @@ export function fetchList (query) {
 
 export function addObj (obj) {
   return request({
-    url: '/admin/dict/',
+    url: dictApi.saveOrUpdate,
     method: 'post',
     data: obj
   })
@@ -18,14 +19,14 @@ export function addObj (obj) {
 
 export function getObj (id) {
   return request({
-    url: '/admin/dict/' + id,
+    url: dictApi.findById + '/' + id,
     method: 'get'
   })
 }
 
 export function delObj (row) {
   return request({
-    url: '/admin/dict/' + row.id + '/' + row.type,
+    url: dictApi + '/' + row.id + '/' + row.type,
     method: 'delete'
   })
 }

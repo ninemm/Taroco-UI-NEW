@@ -20,14 +20,14 @@
     </el-form>
   </template>
   <el-table
-        :key='tableKey'
-        :data="list"
-        v-loading="listLoading"
-        element-loading-text="拼命加载中..."
-        highlight-current-row
-        stripe
-        size="mini"
-        style="width: 100%">
+    :key='tableKey'
+    :data="list"
+    v-loading="listLoading"
+    element-loading-text="拼命加载中..."
+    highlight-current-row
+    stripe
+    size="mini"
+    style="width: 100%">
 
     <el-table-column align="center" label="序号" width="60">
       <template slot-scope="scope">

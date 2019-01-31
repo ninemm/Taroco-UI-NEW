@@ -31,6 +31,13 @@ export function addObj (obj) {
   })
 }
 
+export function addMenu (id) {
+  return request({
+    url: operationApi.addMenu + '/' + id,
+    method: 'get'
+  })
+}
+
 export function getObj (id) {
   return request({
     url: operationApi.findById + '/' + id,

@@ -53,10 +53,10 @@
             </el-form-item>
             <el-form-item label="菜单层级" prop="level">
               <el-input type="number" v-model.number="form.level" :disabled="formEdit" placeholder="菜单层级"></el-input>
-              <p class="d2-help-text"><i class="el-icon-warning"></i> 菜单层级请按实际情况填写，否则父级节点数据会显示错误</p>
+              <p class="d2-help-text"><i class="el-icon-warning"></i> 菜单层级请填写正确，否则菜单树会显示错误;根节点是0，依此类推</p>
             </el-form-item>
-            <el-form-item label="权限标识" prop="permission">
-              <el-input v-model="form.permission" :disabled="formEdit" placeholder="请输入权限标识，如sys-menu-add"></el-input>
+            <el-form-item label="权限标识" prop="code">
+              <el-input v-model="form.code" :disabled="formEdit" placeholder="请输入权限标识，如menu:add"></el-input>
             </el-form-item>
             <el-form-item label="菜单图标" prop="icon">
               <d2-icon-select v-model="form.icon" :disabled="formEdit" placeholder="请选择图标"></d2-icon-select>

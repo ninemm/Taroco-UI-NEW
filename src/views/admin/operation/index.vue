@@ -19,32 +19,25 @@
           </el-form-item>
       </el-form>
     </template>
-    <el-table
-          :key='tableKey'
-          :data="list"
-          size="mini"
-          v-loading="listLoading"
-          element-loading-text="拼命加载中..."
-          highlight-current-row
-          stripe
-          :default-sort="{prop: 'order_list', order: 'descending'}"
-          style="width: 100%">
-      <el-table-column align="center" label="模块名称" prop="module_name" sortable=true>
+    <el-table :key='tableKey' :data="list" size="mini" v-loading="listLoading" stripe style="width: 100%"
+      highlight-current-row
+      :default-sort="{prop: 'order_list', order: 'descending'}">
+      <el-table-column align="center" label="模块名称" prop="module_name" sortable=true width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.module_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="功能名称" sortable=true>
+      <el-table-column align="center" label="功能名称" sortable=true width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.operation_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="left" label="权限编码">
+      <el-table-column align="left" label="权限编码" width="200">
         <template slot-scope="scope">
           <span>{{ scope.row.operation_code }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="left" label="URL">
+      <el-table-column align="left" label="URL" width="200">
         <template slot-scope="scope">
           <span>{{ scope.row.url }}</span>
         </template>
@@ -61,15 +54,16 @@
           <span>{{ scope.row.order_list }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间">
+      <el-table-column align="center" label="创建时间" width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.create_date | parseTime('{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" width="240" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" type="success" @click="handleUpdate(scope.row)" icon="el-icon-edit"></el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
+          <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" title="编辑"></el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete" title="删除"></el-button>
+          <el-button size="mini" type="success" plain @click="handleSetMenu(scope.row)" icon="el-icon-menu" title="设置菜单">菜单设置</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -87,6 +81,7 @@
         style="margin: -10px;">
       </el-pagination>
     </template>
+
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="700px" append-to-body>
       <el-form :model="form" :rules="rules" ref="form" label-width="80px" size="small">
         <el-form-item label="行号" prop="id" v-if="dialogStatus=='update'">
@@ -121,28 +116,27 @@
         <el-button size="small" v-if="dialogStatus=='create'" type="primary" @click="create('form')" icon="el-icon-check">确 定</el-button>
         <el-button size="small" v-else type="primary" @click="update('form')" icon="el-icon-check">修 改</el-button>
       </div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogTreeVisible" width="40%" append-to-body>
-        <el-tree
-          lazy
-          node-key="id"
-          class="module-tree"
-          highlight-current
-          :props="defaultProps"
-          :load="findModuleTreeList">
-          <span class="d2-tree-node" slot-scope="{ node, data }">
-            <span>{{ node.label }}</span>
-            <span>
-              <el-button v-if="node.level > 1" type="text" @click="() => confirm(data)" style="color:#F56C6C;"><i class="el-icon-circle-check" title="确定"></i></el-button>
-            </span>
-          </span>
-        </el-tree>
+
+      <el-dialog title="模块选择" :visible.sync="dialogModuleVisible" width="40%" append-to-body>
+        <div class="module-tree">
+          <el-scrollbar style="height: 100%;">
+            <el-tree lazy node-key="id" highlight-current :props="defaultProps" :load="findModuleTreeList">
+              <span class="d2-tree-node" slot-scope="{ node, data }">
+                <span>{{ node.label }}</span>
+                <span>
+                  <el-button v-if="node.level > 1" type="text" @click="() => confirm(data)"><i class="el-icon-circle-check" title="确定"></i></el-button>
+                </span>
+              </span>
+            </el-tree>
+          </el-scrollbar>
+        </div>
       </el-dialog>
     </el-dialog>
   </d2-container>
 </template>
 
 <script>
-import { fetchList, addObj, putObj, delObj } from '@/api/operation'
+import { fetchList, addObj, putObj, delObj, addMenu } from '@/api/operation'
 import { fetchTreeList } from '@/api/module'
 import { mapGetters } from 'vuex'
 
@@ -190,12 +184,11 @@ export default {
       },
       treeData: [],
       dialogFormVisible: false,
-      dialogTreeVisible: false,
+      dialogModuleVisible: false,
       dialogStatus: '',
       textMap: {
         update: '编辑',
-        create: '创建',
-        open: '模块选择'
+        create: '创建'
       },
       tableKey: 0
     }
@@ -260,6 +253,21 @@ export default {
       this.dialogFormVisible = true
       this.form = row
     },
+    handleSetMenu (row) {
+      this.$confirm('确定设置功能权限 "' + row.operation_name + '" 为菜单吗', '提示', {
+        type: 'warning'
+      }).then(() => {
+        addMenu(row.id)
+          .then(res => {
+            this.$notify({
+              title: '成功',
+              message: '设置菜单成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+      })
+    },
     handleCreate () {
       this.resetForm()
       this.dialogStatus = 'create'
@@ -311,8 +319,8 @@ export default {
       })
     },
     openModuleTreeDialog () {
-      this.dialogStatus = 'open'
-      this.dialogTreeVisible = true
+      // this.dialogStatus = 'open'
+      this.dialogModuleVisible = true
     },
     findModuleTreeList (node, resolve) {
       if (node.level !== 0) {
@@ -322,28 +330,10 @@ export default {
         resolve(res.data)
       })
     },
-    renderContent (h, { node, data, store }) {
-      if (node.level === 1) {
-        return (
-          <span class="custom-tree-node">
-            <span>{node.label}</span>
-          </span>
-        )
-      } else {
-        return (
-          <span class="custom-tree-node">
-            <span>{node.label}</span>
-            <span>
-              <el-button size="mini" type="text" on-click={ () => this.confirm(data) }><i class="el-icon-circle-check" title="确定"></i></el-button>
-            </span>
-          </span>
-        )
-      }
-    },
     confirm (data) {
       this.form.module_id = data.id
       this.form.module_name = data.name
-      this.dialogTreeVisible = false
+      this.dialogModuleVisible = false
       this.$refs['form'].clearValidate('module_name')
     },
     resetForm () {
@@ -361,12 +351,10 @@ export default {
     height: 300px;
     overflow: auto;
   }
-  .custom-tree-node {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
+  .el-dialog__body {
+    padding: 0 20px 20px 20px;
+  }
+  .el-scrollbar .el-scrollbar__wrap {
+    overflow-x: hidden;
   }
 </style>

@@ -61,6 +61,7 @@ export default {
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
           const data = response.data
+          console.log(data.permissions, data.roles)
           commit('d2admin/user/SET_USER_INFO', data.sysUser, { root: true })
           commit('d2admin/user/SET_ROLES', data.roles, { root: true })
           commit('d2admin/user/SET_PERMISSIONS', data.permissions, { root: true })
