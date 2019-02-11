@@ -9,8 +9,8 @@
       <!-- 表单部分 -->
       <div class="form-group">
         <el-card>
-          <el-form ref="loginForm" :inline="true" :rules="rules" :model="formLogin">
-            <el-form-item  prop="username">
+          <el-form ref="loginForm" :rules="rules" :model="formLogin">
+            <el-form-item prop="username">
               <el-input type="text" v-model="formLogin.mobile" @blur="showAccount" placeholder="用户名">
                 <d2-icon slot="prepend" name="user-circle-o"></d2-icon>
               </el-input>
@@ -41,6 +41,20 @@
           </el-form>
         </el-card>
       </div>
+      <!-- <p class="options">
+        <span>自动登录</span>
+        <span>忘记密码</span>
+      </p> -->
+      <div class="footer">
+          <p class="footer-options">
+            <a href="#">帮助</a>
+            <a href="#">隐私</a>
+            <a href="#">条款</a>
+          </p>
+          <p class="footer-copyright">
+            Copyright <d2-icon name="copyright"/> 2018  NCloud UI <a href="#">@Ninemm</a>
+          </p>
+        </div>
     </div>
   </div>
 </template>
@@ -109,7 +123,6 @@ export default {
       this.formLogin.randomStr = util.randomLenNum(this.code.len, true);
       this.code.src = `${process.env.VUE_APP_BASE_URL}/code/${this.formLogin.randomStr}`;
     },
-
     showAccount () {
       if (this.formLogin.mobile) {
         fetchAccountOptions({ mobile: this.formLogin.mobile }).then((res) => {

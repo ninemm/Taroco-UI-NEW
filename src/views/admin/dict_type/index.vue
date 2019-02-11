@@ -3,13 +3,8 @@
     <!-- header 查询条件 -->
     <template slot="header">
       <el-form :inline="true" :model="listQuery" size="mini" style="margin-bottom: -18px;">
-          <el-form-item label="类型">
-            <el-select v-model="listQuery.type" clearable readonly placeholder="请选择字典类型">
-              <el-option v-for="item in typeOptions" :key="item.code" :label="item.name" :value="item.code"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="字典名称">
-            <el-input v-model="listQuery.name" @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="字典名称" />
+          <el-form-item label="类型名称" prop="name">
+            <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="类型名称" v-model="listQuery.name" />
           </el-form-item>
           <el-form-item>
             <el-button type="default" icon="el-icon-search" @click="handleFilter">搜 索</el-button>
@@ -23,34 +18,19 @@
       element-loading-text="拼命加载中..."
       highlight-current-row>
       <el-table-column type="selection" width="60"></el-table-column>
-      <el-table-column align="center" label="字典类型">
-        <template slot-scope="scope">
-          <span>{{ scope.row.dictType ? scope.row.dictType.name : '未定' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="字典类型编码">
-        <template slot-scope="scope">
-          <span>{{ scope.row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="字典名称">
+      <el-table-column align="center" label="类型名称">
         <template slot-scope="scope">
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="数据Key">
+      <el-table-column align="center" label="类型编码">
         <template slot-scope="scope">
-          <span>{{ scope.row.key }}</span>
+          <span>{{ scope.row.code }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="数据值">
+      <el-table-column align="center" label="序号">
         <template slot-scope="scope">
-          <span>{{ scope.row.value }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="icon">
-        <template slot-scope="scope">
-          <span>{{ scope.row.icon }}</span>
+          <span>{{ scope.row.order_list }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
@@ -84,22 +64,14 @@
         <el-form-item label="编号" prop="id" v-if="dialogStatus == 'update'">
           <el-input v-model="form.id" placeholder="编号" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" clearable readonly placeholder="请选择字典类型">
-            <el-option v-for="item in typeOptions" :key="item.code" :label="item.name" :value="item.code"></el-option>
-          </el-select>
+        <el-form-item label="类型名称" prop="name">
+          <el-input v-model="form.name" placeholder="类型名称"></el-input>
         </el-form-item>
-        <el-form-item label="字典名称" prop="name">
-          <el-input v-model="form.name" placeholder="字典名称"></el-input>
+        <el-form-item label="类型编码" prop="code">
+          <el-input v-model="form.code" placeholder="类型编码"></el-input>
         </el-form-item>
-        <el-form-item label="数据key" prop="key">
-          <el-input v-model="form.key" placeholder="数据key"></el-input>
-        </el-form-item>
-        <el-form-item label="数据值" prop="value">
-          <el-input v-model="form.value" placeholder="数据值"></el-input>
-        </el-form-item>
-        <el-form-item label="icon" prop="icon">
-          <el-input v-model="form.icon" placeholder="icon"></el-input>
+        <el-form-item label="序号" prop="order_list">
+          <el-input-number v-model="form.order_list" :min="1" placeholder="请输入序号"></el-input-number>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -112,23 +84,22 @@
 </template>
 
 <script>
+import { fetchList, addObj, putObj, delObj } from '@/api/dict_type'
 import { mapGetters } from 'vuex'
-import { findDictTypeOptions } from '@/api/dict_type'
-import { fetchList, addObj, putObj, delObj } from '@/api/dict'
+
 export default {
-  name: 'upms-dict',
+  name: 'upms-dict-type',
   data () {
     return {
       list: null,
       total: null,
       listLoading: false,
-      typeOptions: [],
       listQuery: {
         page: 1,
         limit: 10
       },
       rules: {
-        type: [
+        code: [
           {
             required: true,
             message: '类型不能为空',
@@ -141,23 +112,11 @@ export default {
             message: '字典名称不能为空',
             trigger: 'blur'
           }
-        ],
-        key: [
-          {
-            required: true,
-            message: '字典名称不能为空',
-            trigger: 'blur'
-          }
-        ],
-        value: [
-          {
-            required: true,
-            message: '数据值',
-            trigger: 'blur'
-          }
         ]
       },
-      form: {},
+      form: {
+        order_list: 10
+      },
       dialogFormVisible: false,
       dialogStatus: '',
       sys_dict_add: true,
@@ -184,7 +143,6 @@ export default {
   },
   created () {
     this.getList()
-    this.initTypeOptions()
     /* this.sys_dict_add = this.permissions['sys_dict_add']
     this.sys_dict_upd = this.permissions['sys_dict_upd']
     this.sys_dict_del = this.permissions['sys_dict_del'] */
@@ -198,11 +156,6 @@ export default {
         this.list = response.data.records
         this.total = response.data.total
         this.listLoading = false
-      })
-    },
-    initTypeOptions () {
-      findDictTypeOptions().then(res => {
-        this.typeOptions = res.data.records
       })
     },
     handleFilter () {
@@ -230,14 +183,11 @@ export default {
       })
     },
     handleUpdate (row) {
-      this.initTypeOptions()
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.form = row
     },
     handleCreate () {
-      this.form = this.resetForm()
-      this.initTypeOptions()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
@@ -264,7 +214,7 @@ export default {
       this.dialogFormVisible = false
       const set = this.$refs
       set[formName].resetFields()
-      // this.form = {}
+      this.form = {}
     },
     update (formName) {
       const set = this.$refs
@@ -286,11 +236,6 @@ export default {
           return false
         }
       })
-    },
-    resetForm () {
-      this.form = {
-        order_list: 10
-      }
     }
   }
 }

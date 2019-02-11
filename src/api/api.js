@@ -107,6 +107,14 @@ export const systemApi = {
   batchDelete: basePath + '/admin/systems/batchDelete'
 }
 
+export const dictTypeApi = {
+  list: basePath + '/admin/dictType/list',
+  findById: basePath + '/admin/dictType/findById',
+  saveOrUpdate: basePath + '/admin/dictType/saveOrUpdate',
+  delete: basePath + '/admin/dictType/delete',
+  batchDelete: basePath + '/admin/dictType/batchDelete'
+}
+
 export const dictApi = {
   list: basePath + '/admin/dict/list',
   findById: basePath + '/admin/dict/findById',
