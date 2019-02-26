@@ -13,6 +13,9 @@ module.exports = {
   outputDir: 'dist', // 构建输出目录
   lintOnSave: true, // eslint-loader 是否在保存的时候检查
   devServer: {
+    port: 8080,
+    https: false,
+    proxy: null,
     publicPath: baseUrl // 和 baseUrl 保持一致
   },
   parallel: require('os').cpus().length > 1, // 构建时开启多个进程处理babel编译

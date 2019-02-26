@@ -53,6 +53,12 @@
       </template>
     </el-table-column>
 
+    <el-table-column align="center" label="系统默认角色">
+      <template slot-scope="scope">
+        <el-tag :type="scope.row.dept_id === '0' ? 'warning' : 'success'">{{scope.row.dept_id | statusFilter}}</el-tag>
+      </template>
+    </el-table-column>
+
     <el-table-column align="center" label="角色描述">
       <template slot-scope="scope">
         <span>{{scope.row.description }}</span>
@@ -250,6 +256,14 @@ export default {
   },
   computed: {
     ...mapGetters(['elements', 'permissions'])
+  },
+  filters: {
+    statusFilter (status) {
+      if (status === '0') {
+        return '是'
+      }
+      return '否'
+    }
   },
   watch: {
     filterText (val) {

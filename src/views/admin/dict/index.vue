@@ -84,9 +84,9 @@
         <el-form-item label="编号" prop="id" v-if="dialogStatus == 'update'">
           <el-input v-model="form.id" placeholder="编号" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" clearable readonly placeholder="请选择字典类型">
-            <el-option v-for="item in typeOptions" :key="item.code" :label="item.name" :value="item.code"></el-option>
+        <el-form-item label="类型" prop="type_id">
+          <el-select v-model="form.type_id" clearable readonly placeholder="请选择字典类型">
+            <el-option v-for="item in typeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="字典名称" prop="name">

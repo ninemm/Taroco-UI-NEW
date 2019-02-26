@@ -26,14 +26,14 @@ export function getObj (id) {
 
 export function delObj (row) {
   return request({
-    url: dictApi + '/' + row.id + '/' + row.type,
+    url: dictApi.delete + '/' + row.id + '/' + row.type,
     method: 'delete'
   })
 }
 
 export function putObj (obj) {
   return request({
-    url: '/admin/dict/',
+    url: dictApi.saveOrUpdate,
     method: 'put',
     data: obj
   })
