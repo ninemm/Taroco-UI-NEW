@@ -4,8 +4,8 @@
     <template slot="header">
       <el-form :inline="true" :model="listQuery" size="mini" style="margin-bottom: -18px;">
           <el-form-item label="类型">
-            <el-select v-model="listQuery.type" clearable readonly placeholder="请选择字典类型">
-              <el-option v-for="item in typeOptions" :key="item.code" :label="item.name" :value="item.code"></el-option>
+            <el-select v-model="listQuery.type_id" clearable readonly placeholder="请选择字典类型">
+              <el-option v-for="item in typeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="字典名称">
